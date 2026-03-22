@@ -1,1 +1,242 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>לוח בקרה – האחים גולדמן</title>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Heebo',sans-serif;background:#0F0804;color:#F2E6D4;direction:rtl;min-height:100vh;}
+.login-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px;}
+.login-card{background:#1C1008;border:1px solid rgba(201,151,58,.2);border-radius:20px;padding:48px;width:100%;max-width:400px;text-align:center;}
+.login-logo{font-size:1.8rem;font-weight:900;color:#E8B85A;margin-bottom:8px;}
+.login-sub{font-size:.85rem;color:rgba(242,230,212,.4);margin-bottom:36px;}
+.login-input{width:100%;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.1);border-radius:12px;padding:14px 16px;font-size:1rem;font-family:'Heebo',sans-serif;color:#F2E6D4;direction:rtl;margin-bottom:14px;transition:border-color .2s;}
+.login-input:focus{outline:none;border-color:#C9973A;}
+.login-btn{width:100%;background:#5C3A1E;color:white;border:none;padding:15px;border-radius:50px;font-size:1rem;font-weight:700;font-family:'Heebo',sans-serif;cursor:pointer;transition:background .2s;}
+.login-btn:hover{background:#8B5E3C;}
+.login-err{color:#e74c3c;font-size:.82rem;margin-top:8px;display:none;}
 
+.dashboard{display:none;min-height:100vh;}
+.dash-nav{background:#1C1008;border-bottom:1px solid rgba(201,151,58,.15);padding:0 32px;height:64px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+.dash-brand{font-size:1.1rem;font-weight:700;color:#E8B85A;display:flex;align-items:center;gap:10px;}
+.dash-brand-dot{width:8px;height:8px;background:#C9973A;border-radius:50%;}
+.dash-logout{background:rgba(255,255,255,.06);color:rgba(242,230,212,.6);border:1px solid rgba(255,255,255,.1);padding:7px 16px;border-radius:50px;font-size:.8rem;font-family:'Heebo',sans-serif;cursor:pointer;transition:all .2s;}
+.dash-logout:hover{background:rgba(255,255,255,.1);}
+.dash-content{padding:32px;}
+.dash-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:32px;}
+.stat-card{background:#1C1008;border:1px solid rgba(201,151,58,.15);border-radius:16px;padding:22px 24px;}
+.stat-num{font-size:2.4rem;font-weight:900;color:#E8B85A;line-height:1;}
+.stat-label{font-size:.78rem;color:rgba(242,230,212,.4);margin-top:6px;}
+.dash-filters{display:flex;gap:10px;margin-bottom:24px;flex-wrap:wrap;}
+.filter-btn{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:rgba(242,230,212,.6);padding:8px 18px;border-radius:50px;font-size:.8rem;font-family:'Heebo',sans-serif;cursor:pointer;transition:all .2s;}
+.filter-btn.active{background:#5C3A1E;border-color:#8B5E3C;color:#F2E6D4;}
+.requests-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:18px;}
+.req-card{background:#1C1008;border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:24px;transition:border-color .2s;position:relative;}
+.req-card:hover{border-color:rgba(201,151,58,.3);}
+.req-card.status-new{border-right:3px solid #E8B85A;}
+.req-card.status-contacted{border-right:3px solid #5A6B2E;}
+.req-card.status-done{border-right:3px solid rgba(255,255,255,.2);}
+.req-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;}
+.req-name{font-size:1.1rem;font-weight:700;color:#F2E6D4;}
+.req-time{font-size:.72rem;color:rgba(242,230,212,.3);}
+.req-badge{font-size:.68rem;font-weight:600;padding:4px 10px;border-radius:50px;letter-spacing:.06em;text-transform:uppercase;}
+.badge-new{background:rgba(232,184,90,.15);color:#E8B85A;border:1px solid rgba(232,184,90,.3);}
+.badge-contacted{background:rgba(90,107,46,.2);color:#8FA44E;border:1px solid rgba(90,107,46,.4);}
+.badge-done{background:rgba(255,255,255,.06);color:rgba(242,230,212,.4);border:1px solid rgba(255,255,255,.1);}
+.req-info{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;}
+.req-info-item{display:flex;flex-direction:column;gap:2px;}
+.req-info-label{font-size:.68rem;color:rgba(242,230,212,.3);text-transform:uppercase;letter-spacing:.08em;}
+.req-info-val{font-size:.88rem;color:rgba(242,230,212,.85);}
+.req-desc{font-size:.84rem;color:rgba(242,230,212,.55);line-height:1.6;margin-bottom:16px;border-top:1px solid rgba(255,255,255,.06);padding-top:12px;}
+.req-actions{display:flex;gap:8px;flex-wrap:wrap;}
+.req-action{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:50px;font-size:.78rem;font-weight:600;text-decoration:none;transition:all .2s;border:none;cursor:pointer;font-family:'Heebo',sans-serif;}
+.action-call{background:#5C3A1E;color:#F2E6D4;}
+.action-call:hover{background:#8B5E3C;}
+.action-wa{background:#1a3a1a;color:#4ade80;}
+.action-wa:hover{background:#25D366;color:white;}
+.action-email{background:rgba(255,255,255,.06);color:rgba(242,230,212,.6);}
+.action-email:hover{background:rgba(255,255,255,.1);}
+.action-status{background:rgba(255,255,255,.04);color:rgba(242,230,212,.4);font-size:.72rem;}
+.action-status:hover{background:rgba(255,255,255,.08);}
+.empty-state{text-align:center;padding:80px 24px;color:rgba(242,230,212,.3);}
+.empty-icon{font-size:3rem;margin-bottom:12px;}
+.empty-text{font-size:1rem;font-weight:500;}
+.empty-sub{font-size:.85rem;margin-top:6px;}
+.refresh-btn{background:rgba(201,151,58,.15);color:#E8B85A;border:1px solid rgba(201,151,58,.3);padding:8px 18px;border-radius:50px;font-size:.8rem;font-family:'Heebo',sans-serif;cursor:pointer;transition:all .2s;}
+.refresh-btn:hover{background:rgba(201,151,58,.25);}
+@media(max-width:700px){
+  .dash-stats{grid-template-columns:1fr 1fr;}
+  .dash-content{padding:20px;}
+  .requests-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<div class="login-screen" id="loginScreen">
+  <div class="login-card">
+    <div class="login-logo">א״ג</div>
+    <div class="login-sub">לוח בקרה – האחים גולדמן</div>
+    <input class="login-input" type="password" id="loginPass" placeholder="סיסמה" onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="login-btn" onclick="doLogin()">כניסה</button>
+    <div class="login-err" id="loginErr">סיסמה שגויה</div>
+  </div>
+</div>
+
+<div class="dashboard" id="dashboard">
+  <nav class="dash-nav">
+    <div class="dash-brand"><div class="dash-brand-dot"></div>לוח בקרה – האחים גולדמן</div>
+    <div style="display:flex;gap:10px;align-items:center;">
+      <button class="refresh-btn" onclick="loadRequests()">רענן 🔄</button>
+      <button class="dash-logout" onclick="logout()">יציאה</button>
+    </div>
+  </nav>
+  <div class="dash-content">
+    <div class="dash-stats" id="dashStats">
+      <div class="stat-card"><div class="stat-num" id="statTotal">0</div><div class="stat-label">סה"כ בקשות</div></div>
+      <div class="stat-card"><div class="stat-num" id="statNew">0</div><div class="stat-label">בקשות חדשות</div></div>
+      <div class="stat-card"><div class="stat-num" id="statContacted">0</div><div class="stat-label">פנו אל הלקוח</div></div>
+      <div class="stat-card"><div class="stat-num" id="statDone">0</div><div class="stat-label">עסקאות שנסגרו</div></div>
+    </div>
+    <div class="dash-filters">
+      <button class="filter-btn active" data-filter="all" onclick="setFilter('all',this)">הכל</button>
+      <button class="filter-btn" data-filter="new" onclick="setFilter('new',this)">חדש</button>
+      <button class="filter-btn" data-filter="contacted" onclick="setFilter('contacted',this)">יצרנו קשר</button>
+      <button class="filter-btn" data-filter="done" onclick="setFilter('done',this)">נסגר</button>
+    </div>
+    <div class="requests-grid" id="requestsGrid">
+      <div class="empty-state"><div class="empty-icon">📋</div><div class="empty-text">טוען בקשות...</div></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const PASS = 'goldman2025';
+let allRequests = [];
+let currentFilter = 'all';
+
+function doLogin() {
+  const p = document.getElementById('loginPass').value;
+  if(p === PASS) {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('dashboard').style.display = 'block';
+    sessionStorage.setItem('gm_auth', '1');
+    loadRequests();
+  } else {
+    document.getElementById('loginErr').style.display = 'block';
+    setTimeout(() => document.getElementById('loginErr').style.display = 'none', 2000);
+  }
+}
+
+function logout() {
+  sessionStorage.removeItem('gm_auth');
+  location.reload();
+}
+
+if(sessionStorage.getItem('gm_auth')) {
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('dashboard').style.display = 'block';
+  loadRequests();
+}
+
+async function loadRequests() {
+  const grid = document.getElementById('requestsGrid');
+  grid.innerHTML = '<div class="empty-state"><div class="empty-icon">⏳</div><div class="empty-text">טוען...</div></div>';
+  
+  // Load from localStorage (fallback/primary)
+  const local = JSON.parse(localStorage.getItem('work_requests') || '[]');
+  
+  // Try Supabase too
+  let supaRequests = [];
+  try {
+    const res = await fetch('https://bvwfkpfotbonxnzwbmio.supabase.co/rest/v1/work_requests?select=*&order=submitted_at.desc', {
+      headers: {
+        'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ2d2ZrcGZvdGJvbnhuentibWlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDAwMDAwMDAsImV4cCI6MjAxNTM2MDAwMH0.placeholder',
+      }
+    });
+    if(res.ok) supaRequests = await res.json();
+  } catch(e) {}
+  
+  // Merge (supabase takes priority, local fills gaps)
+  const localNotInSupa = local.filter(l => !supaRequests.find(s => s.phone === l.phone && s.submitted_at === l.submitted_at));
+  allRequests = [...supaRequests, ...localNotInSupa].sort((a,b) => new Date(b.submitted_at) - new Date(a.submitted_at));
+  
+  updateStats();
+  renderRequests();
+}
+
+function updateStats() {
+  document.getElementById('statTotal').textContent = allRequests.length;
+  document.getElementById('statNew').textContent = allRequests.filter(r=>!r.status||r.status==='new').length;
+  document.getElementById('statContacted').textContent = allRequests.filter(r=>r.status==='contacted').length;
+  document.getElementById('statDone').textContent = allRequests.filter(r=>r.status==='done').length;
+}
+
+function setFilter(f, btn) {
+  currentFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderRequests();
+}
+
+function renderRequests() {
+  const grid = document.getElementById('requestsGrid');
+  let filtered = currentFilter === 'all' ? allRequests : allRequests.filter(r => (r.status||'new') === currentFilter);
+  
+  if(!filtered.length) {
+    grid.innerHTML = '<div class="empty-state"><div class="empty-icon">📭</div><div class="empty-text">אין בקשות כאן עדיין</div><div class="empty-sub">בקשות חדשות יופיעו כאן אוטומטית</div></div>';
+    return;
+  }
+  
+  const typeLabels = {'deck-garden':'דק לגינה','deck-balcony':'ריהוט מרפסת','seating-set':'סט ישיבה','dining-table':'שולחן + ספסלים','custom':'פרויקט מותאם','other':'אחר','':`לא צוין`};
+  const budgetLabels = {'under-3k':'עד 3,000 ₪','3k-6k':'3,000–6,000 ₪','6k-12k':'6,000–12,000 ₪','12k+':'מעל 12,000 ₪','':`לא צוין`};
+  
+  grid.innerHTML = filtered.map((r, i) => {
+    const status = r.status || 'new';
+    const badgeClass = status === 'new' ? 'badge-new' : status === 'contacted' ? 'badge-contacted' : 'badge-done';
+    const badgeLabel = status === 'new' ? '🆕 חדש' : status === 'contacted' ? '✅ יצרנו קשר' : '🤝 נסגר';
+    const timeStr = r.submitted_at ? new Date(r.submitted_at).toLocaleDateString('he-IL', {day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}) : '';
+    const waNum = r.phone ? r.phone.replace(/[-\s]/g,'').replace(/^0/,'972') : '';
+    const waMsg = encodeURIComponent('שלום ' + (r.name||'') + ', אנחנו האחים גולדמן, ראינו את הבקשה שלך ונשמח לשמוע עוד פרטים!');
+    return `<div class="req-card status-${status}" id="card${i}">
+      <div class="req-header">
+        <div>
+          <div class="req-name">${r.name||'לא ידוע'}</div>
+          <div class="req-time">${timeStr}</div>
+        </div>
+        <span class="req-badge ${badgeClass}">${badgeLabel}</span>
+      </div>
+      <div class="req-info">
+        <div class="req-info-item"><div class="req-info-label">טלפון</div><div class="req-info-val" dir="ltr">${r.phone||'—'}</div></div>
+        <div class="req-info-item"><div class="req-info-label">מיקום</div><div class="req-info-val">${r.location||'—'}</div></div>
+        <div class="req-info-item"><div class="req-info-label">סוג פרויקט</div><div class="req-info-val">${typeLabels[r.project_type||'']}</div></div>
+        <div class="req-info-item"><div class="req-info-label">תקציב</div><div class="req-info-val">${budgetLabels[r.budget||'']}</div></div>
+      </div>
+      ${r.description ? `<div class="req-desc">${r.description}</div>` : ''}
+      <div class="req-actions">
+        ${r.phone ? `<a href="tel:${r.phone}" class="req-action action-call">📞 התקשר</a>` : ''}
+        ${waNum ? `<a href="https://wa.me/${waNum}?text=${waMsg}" target="_blank" class="req-action action-wa">💬 וואטסאפ</a>` : ''}
+        ${r.email ? `<a href="mailto:${r.email}" class="req-action action-email">✉️ אימייל</a>` : ''}
+        <button class="req-action action-status" onclick="cycleStatus(${i})">${status==='new'?'→ יצרנו קשר':status==='contacted'?'→ נסגר':'→ חדש'}</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function cycleStatus(i) {
+  const order = ['new','contacted','done'];
+  const r = allRequests[i];
+  const current = r.status || 'new';
+  r.status = order[(order.indexOf(current)+1) % order.length];
+  // Update localStorage
+  const local = JSON.parse(localStorage.getItem('work_requests') || '[]');
+  const li = local.findIndex(l => l.phone === r.phone && l.submitted_at === r.submitted_at);
+  if(li >= 0) { local[li].status = r.status; localStorage.setItem('work_requests', JSON.stringify(local)); }
+  updateStats();
+  renderRequests();
+}
+</script>
+</body>
+</html>
