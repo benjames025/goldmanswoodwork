@@ -1,1 +1,1 @@
-404: Not Found
+{"cleanUrls":true,"rewrites":[{"source":"/admin","destination":"/goldman-admin.html"},{"source":"/(.*)","destination":"/index.html"}]}
