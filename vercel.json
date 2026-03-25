@@ -1,1 +1,1 @@
-{"cleanUrls":true,"rewrites":[{"source":"/admin","destination":"/goldman-admin.html"},{"source":"/(.*)","destination":"/index.html"}]}
+{"cleanUrls":true,"rewrites":[{"source":"/admin","destination":"/goldman-admin.html"},{"source":"/((?!googleba868e6a33b6f9a7\\.html|sitemap\\.xml|robots\\.txt).*)","destination":"/index.html"}]}
