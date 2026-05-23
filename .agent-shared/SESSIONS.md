@@ -66,3 +66,21 @@ Security engineering tools for threat modeling, vulnerability analysis, secure a
 **Note:** Yeah — **the site is fixed and live.** The big stuff is done.
 
 ---
+## 2026-05-22 22:25
+
+**User:** [Image: source: /Users/benjaminjames/Downloads/PHOTO-2026-04-27-15-10-01.jpg]
+
+**Did:** Bash×13, Edit×2
+**Files:** index.html
+**Note:** OK — link previews fixed and pushed. Test by sharing the URL to yourself on WhatsApp tomorrow (sometimes Facebook/Meta caches the old grey-box version for a few hours).
+
+---
+## 2026-05-22 22:34
+
+**User:** i think its fine, the point of the website is that its an easy way for people to book them, if the wahtsapp is linked and the form at the bottom sends them a whatsapp message and maybe email that would be great, i dont have their sign in or emails open rn i cant do anything th...
+
+**Did:** Bash×4, Edit×2, Read×2
+**Files:** index.html
+**Note:** Pushed. Live in ~30s.
+
+---
