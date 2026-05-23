@@ -9,6 +9,8 @@
 <meta name="author" content="Yosef & David Goldman">
 <meta name="robots" content="index, follow, max-image-preview:large">
 <link rel="canonical" href="https://www.goldmanswoodwork.com/">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%231C1008'/><text x='32' y='44' font-family='Heebo,sans-serif' font-size='32' font-weight='900' text-anchor='middle' fill='%23E8B85A' direction='rtl'>א״ג</text></svg>">
+<meta name="theme-color" content="#1C1008">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Goldman's Woodwork">
 <meta property="og:title" content="Goldman's Woodwork | האחים גולדמן">
@@ -431,7 +433,8 @@ footer{background:#0F0804;padding:28px 72px;display:flex;align-items:center;just
         <div class="form-group"><label class="form-label">סוג הפרויקט</label><select class="form-select" id="ftype" name="project_type"><option value="">בחרו סוג...</option><option value="deck-garden">דק לגינה</option><option value="deck-balcony">ריהוט מרפסת</option><option value="seating-set">סט ישיבה לגינה</option><option value="dining-table">שולחן ספסלים</option><option value="custom">פרויקט מותאם אישית</option><option value="other">אחר</option></select></div>
         <div class="form-group"><label class="form-label">תקציב משוער</label><select class="form-select" id="fbudget" name="budget"><option value="">לא בטוח עדיין</option><option value="under-3k">עד 3,000 ש"ח</option><option value="3k-6k">3,000 – 6,000 ש"ח</option><option value="6k-12k">6,000 – 12,000 ש"ח</option><option value="12k+">מעל 12,000 ש"ח</option></select></div>
         <div class="form-group full"><label class="form-label">תיאור הפרויקט *</label><textarea class="form-textarea" id="fdesc" name="description" placeholder="תארו מה אתם רוצים לבנות..." required></textarea></div>
-        <div class="form-group full"><label class="form-label">תמונות השראה (אופציונלי)</label><div class="upload-area"><input type="file" id="photoUpload" accept="image/*" multiple><div class="upload-icon">📸</div><div class="upload-text">לחצו לבחירת תמונות<br><strong>או גררו לכאן</strong></div><div class="upload-previews" id="uploadPreviews"></div></div></div>
+        <div class="form-group full"><p style="font-size:.82rem;color:var(--muted);line-height:1.6;">📸 יש לכם תמונות השראה? שלחו לנו בוואטסאפ אחרי שתשלחו את הבקשה — נשמח לראות.</p></div>
+        <div aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden;"><label>אל תמלאו שדה זה<input type="text" id="fwebsite" name="website" tabindex="-1" autocomplete="off"></label></div>
         <div class="form-group full" style="display:flex;justify-content:flex-end;align-items:center;gap:20px;"><span style="font-size:.8rem;color:var(--muted);">* שדות חובה</span><button type="submit" class="form-submit" id="submitBtn"><span id="submitText">שלחו בקשה →</span></button></div>
       </form>
       <div class="form-success" id="formSuccess"><div class="success-icon">🙌</div><div class="success-title">תודה רבה! קיבלנו את הבקשה</div><div class="success-sub">יוסף או דוד יצרו איתכם קשר תוך 24 שעות.</div></div>
@@ -447,7 +450,7 @@ footer{background:#0F0804;padding:28px 72px;display:flex;align-items:center;just
     <div class="contact-cards">
       <a href="tel:0556651800" class="contact-card"><div class="c-name">יוסף גולדמן</div><span class="c-phone" dir="ltr">055-665-1800</span></a>
       <a href="tel:0556691681" class="contact-card"><div class="c-name">דוד גולדמן</div><span class="c-phone" dir="ltr">055-669-1681</span></a>
-      <a href="https://wa.me/972556651800" class="contact-card" target="_blank"><div class="c-name">וואטסאפ</div><span class="c-phone" dir="ltr" style="font-size:.9rem;color:rgba(255,255,255,.4);font-weight:400">שלחו הודעה →</span></a>
+      <a href="https://wa.me/972556651800" class="contact-card" target="_blank" rel="noopener noreferrer"><div class="c-name">וואטסאפ</div><span class="c-phone" dir="ltr" style="font-size:.9rem;color:rgba(255,255,255,.4);font-weight:400">שלחו הודעה →</span></a>
     </div>
   </div>
 </section>
@@ -455,7 +458,7 @@ footer{background:#0F0804;padding:28px 72px;display:flex;align-items:center;just
 <footer><div class="footer-logo">האחים גולדמן | דקים ועבודות עץ</div><div class="footer-copy">© 2025 כל הזכויות שמורות</div></footer>
 
 <a href="#request" class="request-float">📋 בקשת עבודה</a>
-<a href="https://wa.me/972556651800" class="wa-float" target="_blank">💬</a>
+<a href="https://wa.me/972556651800" class="wa-float" target="_blank" rel="noopener noreferrer">💬</a>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -562,29 +565,37 @@ reveals.forEach(el => obs.observe(el));
   animate();
 })();
 
-// PHOTO UPLOAD
-document.getElementById('photoUpload').addEventListener('change', function(){
-  const prev=document.getElementById('uploadPreviews'); prev.innerHTML='';
-  Array.from(this.files).slice(0,6).forEach(file=>{ const r=new FileReader(); r.onload=e=>{ const img=document.createElement('img'); img.className='upload-preview'; img.src=e.target.result; prev.appendChild(img); }; r.readAsDataURL(file); });
-});
-
 // FORM SUBMIT
-document.getElementById('requestForm').addEventListener('submit', async function(e){
-  e.preventDefault();
-  const name=document.getElementById('fname').value.trim();
-  const phone=document.getElementById('fphone').value.trim();
-  const desc=document.getElementById('fdesc').value.trim();
-  if(!name||!phone||!desc){ showToast('אנא מלאו את כל שדות החובה'); return; }
-  const btn=document.getElementById('submitBtn');
-  btn.disabled=true;
-  document.getElementById('submitText').textContent='שולח...';
+(function(){
   const SHEET_URL='https://script.google.com/macros/s/AKfycbx9G6g_NQepR2_F5NMufnq-BlhNYmnZ_72GcLxrDBl3qvU2ijJBX1ejr7rIL8jiuoyM/exec';
-  const data={name,phone,email:document.getElementById('femail').value,location:document.getElementById('flocation').value,project_type:document.getElementById('ftype').value,budget:document.getElementById('fbudget').value,description:desc,submitted_at:new Date().toLocaleString('he-IL')};
-  try{ await fetch(SHEET_URL+'?'+new URLSearchParams(data).toString(),{mode:'no-cors'}); }catch(e){}
-  document.getElementById('requestForm').style.display='none';
-  document.getElementById('formSuccess').classList.add('show');
-  showToast('הבקשה נשלחה בהצלחה! 🙌');
-});
+  const WA_FALLBACK='https://wa.me/972556651800';
+  const form=document.getElementById('requestForm');
+  const formLoadedAt=Date.now();
+  form.addEventListener('submit', async function(e){
+    e.preventDefault();
+    if(document.getElementById('fwebsite').value){ form.style.display='none'; document.getElementById('formSuccess').classList.add('show'); return; }
+    if(Date.now()-formLoadedAt<1500){ showToast('רגע, נסו שוב'); return; }
+    const name=document.getElementById('fname').value.trim();
+    const phone=document.getElementById('fphone').value.trim();
+    const desc=document.getElementById('fdesc').value.trim();
+    if(!name||!phone||!desc){ showToast('אנא מלאו את כל שדות החובה'); return; }
+    if(!/^[\d+()\-\s]{7,20}$/.test(phone)){ showToast('מספר טלפון לא תקין'); return; }
+    const btn=document.getElementById('submitBtn'), submitText=document.getElementById('submitText');
+    btn.disabled=true; submitText.textContent='שולח...';
+    const data={name,phone,email:document.getElementById('femail').value.trim(),location:document.getElementById('flocation').value.trim(),project_type:document.getElementById('ftype').value,budget:document.getElementById('fbudget').value,description:desc,submitted_at:new Date().toISOString()};
+    try{
+      await fetch(SHEET_URL+'?'+new URLSearchParams(data).toString(),{mode:'no-cors'});
+      form.style.display='none';
+      document.getElementById('formSuccess').classList.add('show');
+      showToast('הבקשה נשלחה בהצלחה! 🙌');
+    }catch(err){
+      btn.disabled=false; submitText.textContent='שלחו בקשה →';
+      const waText=encodeURIComponent(`שלום, אני ${name} מ${data.location||'—'}. ${desc} (טלפון: ${phone})`);
+      showToast('בעיית חיבור. נסו שוב או פנו בוואטסאפ');
+      setTimeout(()=>{ if(confirm('לא הצלחנו לשלוח. לפתוח וואטסאפ במקום?')) window.open(`${WA_FALLBACK}?text=${waText}`,'_blank','noopener,noreferrer'); },400);
+    }
+  });
+})();
 
 function showToast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),3500); }
 
