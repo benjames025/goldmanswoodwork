@@ -443,7 +443,7 @@ footer{background:#0F0804;padding:28px 72px;display:flex;align-items:center;just
         <div aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden;"><label>אל תמלאו שדה זה<input type="text" id="fwebsite" name="website" tabindex="-1" autocomplete="off"></label></div>
         <div class="form-group full" style="display:flex;justify-content:flex-end;align-items:center;gap:20px;"><span style="font-size:.8rem;color:var(--muted);">* שדות חובה</span><button type="submit" class="form-submit" id="submitBtn"><span id="submitText">שלחו בקשה →</span></button></div>
       </form>
-      <div class="form-success" id="formSuccess"><div class="success-icon">🙌</div><div class="success-title">תודה רבה! קיבלנו את הבקשה</div><div class="success-sub">יוסף או דוד יצרו איתכם קשר תוך 24 שעות.</div></div>
+      <div class="form-success" id="formSuccess"><div class="success-icon">🙌</div><div class="success-title">כמעט סיימנו</div><div class="success-sub">פתחנו לכם וואטסאפ עם ההודעה מוכנה — רק ללחוץ שלח וההזמנה תגיע ישירות ליוסף ודוד.</div><a id="waSendBtn" class="form-submit" href="https://wa.me/972556651800" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;gap:8px;margin-top:22px;text-decoration:none;">💬 פתחו וואטסאפ ידנית</a></div>
     </div>
   </div>
 </section>
@@ -571,13 +571,13 @@ reveals.forEach(el => obs.observe(el));
   animate();
 })();
 
-// FORM SUBMIT
+// FORM SUBMIT — builds a WhatsApp message and opens it pre-filled
 (function(){
-  const SHEET_URL='https://script.google.com/macros/s/AKfycbx9G6g_NQepR2_F5NMufnq-BlhNYmnZ_72GcLxrDBl3qvU2ijJBX1ejr7rIL8jiuoyM/exec';
-  const WA_FALLBACK='https://wa.me/972556651800';
+  const WA_NUMBER='972556651800';
   const form=document.getElementById('requestForm');
   const formLoadedAt=Date.now();
-  form.addEventListener('submit', async function(e){
+  const ftype=document.getElementById('ftype'), fbudget=document.getElementById('fbudget');
+  form.addEventListener('submit', function(e){
     e.preventDefault();
     if(document.getElementById('fwebsite').value){ form.style.display='none'; document.getElementById('formSuccess').classList.add('show'); return; }
     if(Date.now()-formLoadedAt<1500){ showToast('רגע, נסו שוב'); return; }
@@ -586,20 +586,22 @@ reveals.forEach(el => obs.observe(el));
     const desc=document.getElementById('fdesc').value.trim();
     if(!name||!phone||!desc){ showToast('אנא מלאו את כל שדות החובה'); return; }
     if(!/^[\d+()\-\s]{7,20}$/.test(phone)){ showToast('מספר טלפון לא תקין'); return; }
-    const btn=document.getElementById('submitBtn'), submitText=document.getElementById('submitText');
-    btn.disabled=true; submitText.textContent='שולח...';
-    const data={name,phone,email:document.getElementById('femail').value.trim(),location:document.getElementById('flocation').value.trim(),project_type:document.getElementById('ftype').value,budget:document.getElementById('fbudget').value,description:desc,submitted_at:new Date().toISOString()};
-    try{
-      await fetch(SHEET_URL+'?'+new URLSearchParams(data).toString(),{mode:'no-cors'});
-      form.style.display='none';
-      document.getElementById('formSuccess').classList.add('show');
-      showToast('הבקשה נשלחה בהצלחה! 🙌');
-    }catch(err){
-      btn.disabled=false; submitText.textContent='שלחו בקשה →';
-      const waText=encodeURIComponent(`שלום, אני ${name} מ${data.location||'—'}. ${desc} (טלפון: ${phone})`);
-      showToast('בעיית חיבור. נסו שוב או פנו בוואטסאפ');
-      setTimeout(()=>{ if(confirm('לא הצלחנו לשלוח. לפתוח וואטסאפ במקום?')) window.open(`${WA_FALLBACK}?text=${waText}`,'_blank','noopener,noreferrer'); },400);
-    }
+    const email=document.getElementById('femail').value.trim();
+    const location=document.getElementById('flocation').value.trim();
+    const typeLabel=ftype.value?ftype.options[ftype.selectedIndex].text:'';
+    const budgetLabel=fbudget.value?fbudget.options[fbudget.selectedIndex].text:'';
+    const lines=['שלום, אני '+name+' ורציתי לבקש הצעת מחיר 🪵',''];
+    if(location) lines.push('📍 מיקום: '+location);
+    if(typeLabel) lines.push('🔨 סוג פרויקט: '+typeLabel);
+    if(budgetLabel) lines.push('💰 תקציב: '+budgetLabel);
+    lines.push('📞 טלפון: '+phone);
+    if(email) lines.push('✉️ אימייל: '+email);
+    lines.push('','תיאור:',desc,'','(נשלח דרך האתר)');
+    const waUrl='https://wa.me/'+WA_NUMBER+'?text='+encodeURIComponent(lines.join('\n'));
+    document.getElementById('waSendBtn').href=waUrl;
+    window.open(waUrl,'_blank','noopener,noreferrer');
+    form.style.display='none';
+    document.getElementById('formSuccess').classList.add('show');
   });
 })();
 
