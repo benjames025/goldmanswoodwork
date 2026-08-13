@@ -128,11 +128,25 @@ nav.scrolled{box-shadow:0 2px 32px rgba(28,16,8,0.1);}
 .brother-tooltip span{color:var(--gold-light);}
 .brother-avatar:hover .brother-tooltip{opacity:1;transform:translateX(-50%) translateY(0);}
 .brothers-label{margin-right:16px;font-size:.85rem;color:var(--muted);}
-.story-imgs{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:280px 220px;gap:12px;}
-.story-img{border-radius:14px;overflow:hidden;}
+.story-media{position:relative;}
+/* Native horizontal scroll: the browser handles the gesture, so vertical
+   page scrolling is never hijacked. overscroll-behavior-x stops the swipe
+   from chaining into iOS back-navigation. */
+.story-imgs{display:flex;gap:12px;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;padding:0 0 14px;scrollbar-width:thin;scrollbar-color:rgba(92,58,30,.3) transparent;}
+.story-imgs::-webkit-scrollbar{height:6px;}
+.story-imgs::-webkit-scrollbar-track{background:rgba(92,58,30,.07);border-radius:10px;}
+.story-imgs::-webkit-scrollbar-thumb{background:rgba(92,58,30,.28);border-radius:10px;}
+.story-imgs::-webkit-scrollbar-thumb:hover{background:rgba(92,58,30,.45);}
+.story-img{flex:0 0 auto;width:250px;height:330px;border-radius:14px;overflow:hidden;scroll-snap-align:start;cursor:zoom-in;background:rgba(92,58,30,.06);}
 .story-img img{width:100%;height:100%;object-fit:cover;transition:transform .5s;display:block;}
 .story-img:hover img{transform:scale(1.04);}
-.story-img.tall{grid-row:span 2;}
+.story-img:focus-visible{outline:2px solid var(--gold);outline-offset:3px;}
+/* fade on the left edge (RTL: that is the "more this way" side) */
+.story-media::after{content:'';position:absolute;top:0;bottom:14px;left:0;width:56px;pointer-events:none;background:linear-gradient(to left,transparent,var(--cream));opacity:1;transition:opacity .3s;}
+.story-media.at-end::after{opacity:0;}
+.story-hint{display:flex;align-items:center;gap:8px;margin-top:12px;font-size:.76rem;color:var(--muted);letter-spacing:.06em;}
+.story-hint .arrow{display:inline-block;animation:nudge 1.6s ease-in-out infinite;}
+@keyframes nudge{0%,100%{transform:translateX(0)}50%{transform:translateX(-5px)}}
 
 .services{background:var(--dark);padding:110px 72px;position:relative;overflow:hidden;}
 .services::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent,transparent 40px,rgba(255,255,255,.012) 40px,rgba(255,255,255,.012) 41px);}
@@ -277,8 +291,7 @@ footer{background:#0F0804;padding:28px 72px;display:flex;align-items:center;just
   .hero-text-wrap{padding:28px 24px;}
   .hero h1{font-size:2.4rem;}
   .story{grid-template-columns:1fr;padding:64px 24px;gap:40px;}
-  .story-imgs{grid-template-rows:200px 160px;}
-  .story-img.tall{grid-row:span 1;}
+  .story-img{width:200px;height:270px;}
   .services{padding:64px 24px;}
   .svc-grid{grid-template-columns:1fr;}
   .gallery-section{padding:64px 20px 40px;}
@@ -489,10 +502,16 @@ footer{background:#0F0804;padding:28px 72px;display:flex;align-items:center;just
         <div class="brother-avatar"><img src="/img/david-goldman-sm.webp" alt="דוד גולדמן" width="510" height="610" loading="lazy" decoding="async"><div class="brother-tooltip"><strong>דוד גולדמן</strong><span>שותף מייסד</span></div></div>
       </div>
     </div>
-    <div class="story-imgs reveal" style="transition-delay:.1s">
-      <div class="story-img tall"><img src="/img/garden-seating-tree-sm.webp" alt="מערכת ישיבה בגינה" width="700" height="933" loading="lazy" decoding="async" srcset="/img/garden-seating-tree-sm.webp 700w, /img/garden-seating-tree-lg.webp 900w" sizes="(max-width:900px) 50vw, 22vw"></div>
-      <div class="story-img"><img src="/img/garden-set-full-sm.webp" alt="סט ישיבה" width="700" height="525" loading="lazy" decoding="async" srcset="/img/garden-set-full-sm.webp 700w, /img/garden-set-full-lg.webp 1200w" sizes="(max-width:900px) 50vw, 22vw"></div>
-      <div class="story-img"><img src="/img/pergola-pool-kinneret-sm.webp" alt="פרגולה עם חיפוי במבוק מול הכינרת" width="506" height="900" loading="lazy" decoding="async" srcset="/img/pergola-pool-kinneret-sm.webp 506w, /img/pergola-pool-kinneret-lg.webp 843w" sizes="(max-width:900px) 50vw, 22vw"></div>
+    <div class="story-media reveal" style="transition-delay:.1s">
+      <div class="story-imgs" id="storyStrip" tabindex="0" role="group" aria-label="גלריית עבודות - ניתן לגלול הצידה">
+      <div class="story-img"><img src="/img/pergola-pool-kinneret-sm.webp" alt="פרגולה עם חיפוי במבוק מול הכינרת" width="506" height="900" loading="lazy" decoding="async" srcset="/img/pergola-pool-kinneret-sm.webp 506w, /img/pergola-pool-kinneret-lg.webp 843w" sizes="250px" data-full="/img/pergola-pool-kinneret-lg.webp"></div>
+      <div class="story-img"><img src="/img/deck-red-tree-sm.webp" alt="דק עץ סביב עץ אורן" width="700" height="525" loading="lazy" decoding="async" srcset="/img/deck-red-tree-sm.webp 700w, /img/deck-red-tree-lg.webp 1400w" sizes="250px" data-full="/img/deck-red-tree-lg.webp"></div>
+      <div class="story-img"><img src="/img/garden-seating-tree-sm.webp" alt="מערכת ישיבה בגינה" width="700" height="933" loading="lazy" decoding="async" srcset="/img/garden-seating-tree-sm.webp 700w, /img/garden-seating-tree-lg.webp 900w" sizes="250px" data-full="/img/garden-seating-tree-lg.webp"></div>
+      <div class="story-img"><img src="/img/fence-build-wide-sm.webp" alt="גדר עץ גבוהה לחצר" width="700" height="394" loading="lazy" decoding="async" srcset="/img/fence-build-wide-sm.webp 700w, /img/fence-build-wide-lg.webp 1400w" sizes="250px" data-full="/img/fence-build-wide-lg.webp"></div>
+      <div class="story-img"><img src="/img/bench-balcony-sunset-sm.webp" alt="ספסל מרפסת בשקיעה" width="675" height="900" loading="lazy" decoding="async" srcset="/img/bench-balcony-sunset-sm.webp 675w, /img/bench-balcony-sunset-lg.webp 1125w" sizes="250px" data-full="/img/bench-balcony-sunset-lg.webp"></div>
+      <div class="story-img"><img src="/img/garden-set-full-sm.webp" alt="סט ישיבה לגינה" width="700" height="525" loading="lazy" decoding="async" srcset="/img/garden-set-full-sm.webp 700w, /img/garden-set-full-lg.webp 1200w" sizes="250px" data-full="/img/garden-set-full-lg.webp"></div>
+      </div>
+      <div class="story-hint"><span class="arrow">←</span><span>גללו הצידה לעוד עבודות</span></div>
     </div>
   </div>
 </section>
@@ -514,8 +533,6 @@ footer{background:#0F0804;padding:28px 72px;display:flex;align-items:center;just
   <div class="gallery-grid reveal">
     <div class="gallery-item wide featured"><img src="/img/planters-sm.webp" alt="אדניות עץ" width="700" height="394" loading="lazy" decoding="async" srcset="/img/planters-sm.webp 700w, /img/planters-lg.webp 1400w" sizes="(max-width:780px) 50vw, 25vw" data-full="/img/planters-lg.webp"><div class="gallery-overlay"><span>אדניות עץ</span></div></div>
     <div class="gallery-item tall featured"><img src="/img/deck-build-sm.webp" alt="בניית דק" width="700" height="394" loading="lazy" decoding="async" srcset="/img/deck-build-sm.webp 700w, /img/deck-build-lg.webp 1400w" sizes="(max-width:780px) 50vw, 25vw" data-full="/img/deck-build-lg.webp"><div class="gallery-overlay"><span>בניית דק</span></div></div>
-    <div class="gallery-item"><img src="/img/bench-balcony-sunset-sm.webp" alt="ספסל מרפסת בשקיעה" width="675" height="900" loading="lazy" decoding="async" srcset="/img/bench-balcony-sunset-sm.webp 675w, /img/bench-balcony-sunset-lg.webp 1125w" sizes="(max-width:780px) 50vw, 25vw" data-full="/img/bench-balcony-sunset-lg.webp"></div>
-    <div class="gallery-item"><img src="/img/fence-build-wide-sm.webp" alt="גדר עץ גבוהה לחצר" width="700" height="394" loading="lazy" decoding="async" srcset="/img/fence-build-wide-sm.webp 700w, /img/fence-build-wide-lg.webp 1400w" sizes="(max-width:780px) 50vw, 25vw" data-full="/img/fence-build-wide-lg.webp"></div>
     <div class="gallery-item"><img src="/img/workshop-sm.webp" alt="הסדנה" width="700" height="394" loading="lazy" decoding="async" srcset="/img/workshop-sm.webp 700w, /img/workshop-lg.webp 1200w" sizes="(max-width:780px) 50vw, 25vw" data-full="/img/workshop-lg.webp"></div>
     <div class="gallery-item"><img src="/img/pergola-patio-finished-sm.webp" alt="פרגולה עם חיפוי במבוק מול הכינרת" width="506" height="900" loading="lazy" decoding="async" srcset="/img/pergola-patio-finished-sm.webp 506w, /img/pergola-patio-finished-lg.webp 844w" sizes="(max-width:780px) 50vw, 25vw" data-full="/img/pergola-patio-finished-lg.webp"></div>
     <div class="gallery-item"><img src="/img/entry-step-deck-sm.webp" alt="מדרגת עץ בכניסה לבית" width="506" height="900" loading="lazy" decoding="async" srcset="/img/entry-step-deck-sm.webp 506w, /img/entry-step-deck-lg.webp 844w" sizes="(max-width:780px) 50vw, 25vw" data-full="/img/entry-step-deck-lg.webp"></div>
@@ -863,6 +880,22 @@ reveals.forEach(el => obs.observe(el));
 
 function showToast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),3500); }
 
+// STORY STRIP — hide the edge fade once it is scrolled to the end
+(function(){
+  const strip = document.getElementById('storyStrip');
+  if(!strip) return;
+  const wrap = strip.closest('.story-media');
+  function update(){
+    // RTL reports scrollLeft as negative in some engines, so compare on magnitude
+    const scrolled = Math.abs(strip.scrollLeft);
+    const atEnd = scrolled + strip.clientWidth >= strip.scrollWidth - 4;
+    wrap.classList.toggle('at-end', atEnd);
+  }
+  strip.addEventListener('scroll', update, {passive:true});
+  window.addEventListener('resize', update);
+  update();
+})();
+
 // PROJECT VIDEOS — silent loop, only while on screen
 (function(){
   const vids = document.querySelectorAll('.project-media video');
@@ -999,7 +1032,7 @@ function showToast(msg){ const t=document.getElementById('toast'); t.textContent
 
   // Recent-project photos and the build-process photos open too
   const zoomable = Array.prototype.slice.call(
-    document.querySelectorAll('.project-media img, .build-media img'));
+    document.querySelectorAll('.project-media img, .build-media img, .story-img img'));
   zoomable.forEach(function(img, i){
     img.style.cursor = 'zoom-in';
     img.setAttribute('role', 'button');
