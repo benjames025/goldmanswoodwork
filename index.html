@@ -11,7 +11,7 @@
 <link rel="canonical" href="https://www.goldmanswoodwork.com/">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%231C1008'/><text x='32' y='44' font-family='Heebo,sans-serif' font-size='32' font-weight='900' text-anchor='middle' fill='%23E8B85A' direction='rtl'>א״ג</text></svg>">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-<link rel="preload" as="image" href="/img/pergola-patio-finished-lg.webp" fetchpriority="high">
+<link rel="preload" as="image" href="/img/pergola-bamboo-front-lg.webp" fetchpriority="high">
 <meta name="theme-color" content="#1C1008">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Goldman's Woodwork">
@@ -23,7 +23,7 @@
 <meta property="og:image" content="https://www.goldmanswoodwork.com/og-image.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="פרגולה מקורה עם תקרת שלבי עץ מול הכינרת - האחים גולדמן">
+<meta property="og:image:alt" content="פרגולה עם חיפוי במבוק מול הכינרת - האחים גולדמן">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Goldman's Woodwork | האחים גולדמן">
 <meta name="twitter:description" content="Custom decks, garden furniture, and woodwork by Yosef and David Goldman.">
@@ -54,8 +54,10 @@
 <style>
 :root{--dark:#1C1008;--wood:#5C3A1E;--wood-mid:#8B5E3C;--wood-light:#C4915A;--gold:#C9973A;--gold-light:#E8B85A;--sand:#F2E6D4;--cream:#FAF7F2;--olive:#5A6B2E;--text:#1A0F07;--text-mid:#3D2B1A;--muted:#7A6050;--white:#FFFFFF;}
 *{margin:0;padding:0;box-sizing:border-box;}
-html{scroll-behavior:smooth;}
-body{font-family:'Heebo',sans-serif;background:var(--cream);color:var(--text);direction:rtl;overflow-x:hidden;}
+html{scroll-behavior:smooth;overflow-x:hidden;}
+body{font-family:'Heebo',sans-serif;background:var(--cream);color:var(--text);direction:rtl;overflow-x:hidden;width:100%;position:relative;}
+/* nothing may push the page sideways */
+img,video,canvas,svg{max-width:100%;}
 
 nav{position:fixed;top:0;left:0;right:0;z-index:200;padding:0 48px;height:68px;display:flex;align-items:center;justify-content:space-between;background:rgba(250,247,242,0.94);backdrop-filter:blur(20px);border-bottom:1px solid rgba(92,58,30,0.1);transition:box-shadow .3s;}
 nav.scrolled{box-shadow:0 2px 32px rgba(28,16,8,0.1);}
@@ -71,7 +73,7 @@ nav.scrolled{box-shadow:0 2px 32px rgba(28,16,8,0.1);}
 .nav-hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:4px;}
 .nav-hamburger span{display:block;width:24px;height:2px;background:var(--wood);border-radius:2px;}
 
-.hero-expand{position:relative;height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden;background:var(--dark);}
+.hero-expand{position:relative;height:100vh;height:100svh;display:flex;align-items:center;justify-content:center;overflow:hidden;background:var(--dark);}
 .hero-bg-img{position:absolute;inset:0;}
 .hero-bg-img img{width:100%;height:100%;object-fit:cover;opacity:.15;}
 .hero-media-wrap{position:relative;z-index:2;border-radius:16px;overflow:hidden;box-shadow:0 32px 80px rgba(0,0,0,0.5);}
@@ -173,7 +175,8 @@ nav.scrolled{box-shadow:0 2px 32px rgba(28,16,8,0.1);}
 .carousel-inner h2{font-size:clamp(2rem,3.5vw,3.2rem);font-weight:800;color:var(--sand);letter-spacing:-.025em;margin-bottom:16px;}
 .carousel-inner .section-tag{color:rgba(232,184,90,.8);}
 .carousel-inner .section-tag::before{background:var(--gold);}
-.carousel-stage{height:400px;position:relative;perspective:1200px;margin-top:52px;cursor:grab;}
+.carousel-stage{height:400px;position:relative;perspective:1200px;margin-top:52px;cursor:grab;touch-action:pan-y;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;}
+.carousel-stage:active{cursor:grabbing;}
 .carousel-stage:active{cursor:grabbing;}
 .carousel-cylinder{position:absolute;top:0;left:50%;height:100%;transform-style:preserve-3d;will-change:transform;}
 .carousel-face{position:absolute;top:0;height:100%;display:flex;align-items:center;justify-content:center;padding:8px;border-radius:16px;overflow:hidden;backface-visibility:hidden;}
@@ -296,7 +299,7 @@ footer{background:#0F0804;padding:28px 72px;display:flex;align-items:center;just
 }
 @media(max-width:500px){.pricing-grid{grid-template-columns:1fr;}.miluim-stats{flex-direction:column;gap:24px;}}
 
-.lightbox-overlay{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.92);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s ease;backdrop-filter:blur(8px);}
+.lightbox-overlay{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.92);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s ease;backdrop-filter:blur(8px);overscroll-behavior:contain;touch-action:none;}
 .lightbox-overlay.active{opacity:1;pointer-events:all;}
 .lightbox-overlay img{max-width:90vw;max-height:85vh;border-radius:12px;box-shadow:0 20px 60px rgba(0,0,0,.5);object-fit:contain;}
 .lightbox-close{position:absolute;top:24px;right:28px;width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.15);color:white;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s;z-index:2;}
@@ -394,9 +397,9 @@ footer{background:#0F0804;padding:28px 72px;display:flex;align-items:center;just
 </nav>
 
 <section class="hero-expand" id="hero">
-  <div class="hero-bg-img"><img src="/img/pergola-patio-finished-lg.webp" alt="" width="844" height="1500" fetchpriority="high" decoding="async" aria-hidden="true"></div>
+  <div class="hero-bg-img"><img src="/img/pergola-bamboo-front-lg.webp" alt="" width="1125" height="1500" fetchpriority="high" decoding="async" aria-hidden="true"></div>
   <div class="hero-media-wrap" id="heroMedia">
-    <img src="/img/pergola-patio-finished-lg.webp" alt="פרגולה מקורה עם תקרת שלבי עץ" width="844" height="1500" fetchpriority="high" decoding="async">
+    <img src="/img/pergola-bamboo-front-lg.webp" alt="פרגולה עם חיפוי במבוק מעל הבריכה" width="1125" height="1500" fetchpriority="high" decoding="async">
     <div class="hero-media-overlay"></div>
     <div class="hero-text-wrap">
       <div class="hero-eyebrow" id="heroTag"><span class="hero-eyebrow-line"></span>קיבוץ בית זרע</div>
@@ -427,12 +430,12 @@ footer{background:#0F0804;padding:28px 72px;display:flex;align-items:center;just
       <span class="project-badge">חדש</span>
       <div class="project-media">
         <video src="/video/patio-tour.mp4" poster="/video/patio-tour-poster.webp"
-               muted loop playsinline preload="none" aria-label="סיור בפרגולה מקורה עם תקרת שלבי עץ"></video>
+               muted loop playsinline preload="none" aria-label="סיור בפרגולה עם חיפוי במבוק"></video>
       </div>
       <div class="project-body">
-        <span class="project-kicker">פרגולה ותקרת עץ</span>
-        <div class="project-title">פרגולה מקורה עם תקרת שלבים</div>
-        <p class="project-desc">קירוי מלא למרפסת עם תקרת שלבי עץ, קורות נושאות וגימור עמיד לשמש ולגשם.</p>
+        <span class="project-kicker">פרגולה וחיפוי במבוק</span>
+        <div class="project-title">פרגולה עם חיפוי במבוק</div>
+        <p class="project-desc">פרגולה למרפסת עם חיפוי במבוק וקורות נושאות. נותנת צל לאורך כל היום.</p>
       </div>
     </article>
 
@@ -451,15 +454,15 @@ footer{background:#0F0804;padding:28px 72px;display:flex;align-items:center;just
     <article class="project-card">
       <span class="project-badge">חדש</span>
       <div class="project-media">
-        <img src="/img/garden-fence-path-sm.webp" alt="גדר עץ לגינה עם שביל מקורה" width="675" height="900"
+        <img src="/img/garden-fence-path-sm.webp" alt="גדר עץ לגינה" width="675" height="900"
              loading="lazy" decoding="async"
              srcset="/img/garden-fence-path-sm.webp 675w, /img/garden-fence-path-lg.webp 1125w"
              sizes="(max-width:640px) 100vw, (max-width:1000px) 50vw, 25vw" data-full="/img/garden-fence-path-lg.webp">
       </div>
       <div class="project-body">
-        <span class="project-kicker">גדר וקירוי</span>
-        <div class="project-title">גדר גינה ושביל מקורה</div>
-        <p class="project-desc">גדר עץ מלאה לאורך השביל, עם קירוי מעל המעבר. פרטיות מלאה וצל לאורך כל הדרך.</p>
+        <span class="project-kicker">גדר עץ</span>
+        <div class="project-title">גדר גינה מעץ</div>
+        <p class="project-desc">גדר עץ מלאה לאורך השביל. פרטיות מלאה, בגובה ובמידות של המקום.</p>
       </div>
     </article>
 
@@ -511,6 +514,7 @@ footer{background:#0F0804;padding:28px 72px;display:flex;align-items:center;just
   <div class="gallery-grid reveal">
     <div class="gallery-item wide featured"><img src="/img/planters-sm.webp" alt="אדניות עץ" width="700" height="394" loading="lazy" decoding="async" srcset="/img/planters-sm.webp 700w, /img/planters-lg.webp 1400w" sizes="(max-width:780px) 50vw, 25vw" data-full="/img/planters-lg.webp"><div class="gallery-overlay"><span>אדניות עץ</span></div></div>
     <div class="gallery-item tall featured"><img src="/img/deck-build-sm.webp" alt="בניית דק" width="700" height="394" loading="lazy" decoding="async" srcset="/img/deck-build-sm.webp 700w, /img/deck-build-lg.webp 1400w" sizes="(max-width:780px) 50vw, 25vw" data-full="/img/deck-build-lg.webp"><div class="gallery-overlay"><span>בניית דק</span></div></div>
+    <div class="gallery-item"><img src="/img/pergola-patio-finished-sm.webp" alt="פרגולה עם חיפוי במבוק מול הכינרת" width="506" height="900" loading="lazy" decoding="async" srcset="/img/pergola-patio-finished-sm.webp 506w, /img/pergola-patio-finished-lg.webp 844w" sizes="(max-width:780px) 50vw, 25vw" data-full="/img/pergola-patio-finished-lg.webp"></div>
     <div class="gallery-item"><img src="/img/entry-step-deck-sm.webp" alt="מדרגת עץ בכניסה לבית" width="506" height="900" loading="lazy" decoding="async" srcset="/img/entry-step-deck-sm.webp 506w, /img/entry-step-deck-lg.webp 844w" sizes="(max-width:780px) 50vw, 25vw" data-full="/img/entry-step-deck-lg.webp"></div>
     <div class="gallery-item"><img src="/img/benches-long-sm.webp" alt="שולחן אוכל קיבוץ" width="700" height="394" loading="lazy" decoding="async" srcset="/img/benches-long-sm.webp 700w, /img/benches-long-lg.webp 1200w" sizes="(max-width:780px) 50vw, 25vw" data-full="/img/benches-long-lg.webp"></div>
     <div class="gallery-item"><img src="/img/benches-outdoor-sm.webp" alt="ספסלי גינה" width="675" height="1200" loading="lazy" decoding="async" data-full="/img/benches-outdoor-lg.webp"></div>
@@ -563,13 +567,13 @@ footer{background:#0F0804;padding:28px 72px;display:flex;align-items:center;just
       <div class="build-step reveal" style="transition-delay:.16s">
         <div class="build-media">
           <span class="build-num">3</span>
-          <img src="/img/ceiling-install-sm.webp" alt="התקנת תקרת שלבי עץ" width="506" height="900"
+          <img src="/img/ceiling-install-sm.webp" alt="התקנת חיפוי במבוק" width="506" height="900"
                loading="lazy" decoding="async"
                srcset="/img/ceiling-install-sm.webp 506w, /img/ceiling-install-lg.webp 844w"
                sizes="(max-width:1000px) 100vw, 33vw" data-full="/img/ceiling-install-lg.webp">
         </div>
         <h3>מגמרים לפרטים</h3>
-        <p>ליטוש, ציפוי והגנה מפני מזג האוויר. מסיימים רק כשזה נראה בדיוק כמו שצריך.</p>
+        <p>ליטוש, ציפוי והגנה על העץ. מסיימים רק כשזה נראה בדיוק כמו שצריך.</p>
       </div>
 
     </div>
@@ -722,12 +726,80 @@ reveals.forEach(el => obs.observe(el));
   });
   let rot = 0, lastX = 0, isDragging = false, vel = 0, raf;
   function setRot(r) { rot = r; cyl.style.transform = `rotateY(${r}deg)`; }
-  stage.addEventListener('mousedown', e => { isDragging = true; lastX = e.clientX; cancelAnimationFrame(raf); });
-  window.addEventListener('mousemove', e => { if(!isDragging) return; vel = (e.clientX - lastX) * 0.25; setRot(rot + vel); lastX = e.clientX; });
-  window.addEventListener('mouseup', () => { if(!isDragging) return; isDragging = false; function m(){ if(Math.abs(vel)<.05)return; vel*=.95; setRot(rot+vel); raf=requestAnimationFrame(m);} m(); });
-  stage.addEventListener('touchstart', e => { isDragging=true; lastX=e.touches[0].clientX; cancelAnimationFrame(raf); },{passive:true});
-  window.addEventListener('touchmove', e => { if(!isDragging)return; vel=(e.touches[0].clientX-lastX)*.3; setRot(rot+vel); lastX=e.touches[0].clientX; },{passive:true});
-  window.addEventListener('touchend', () => { if(!isDragging)return; isDragging=false; function m(){ if(Math.abs(vel)<.05)return; vel*=.95; setRot(rot+vel); raf=requestAnimationFrame(m);} m(); });
+  function glide(){
+    if(Math.abs(vel) < .05) return;
+    vel *= .95; setRot(rot + vel); raf = requestAnimationFrame(glide);
+  }
+
+  // ---- mouse (desktop) ----
+  let mouseMoved = 0;
+  stage.addEventListener('mousedown', e => {
+    isDragging = true; lastX = e.clientX; mouseMoved = 0;
+    delete stage.dataset.justDragged;
+    cancelAnimationFrame(raf);
+  });
+  window.addEventListener('mousemove', e => {
+    if(!isDragging) return;
+    mouseMoved += Math.abs(e.clientX - lastX);
+    vel = (e.clientX - lastX) * 0.25; setRot(rot + vel); lastX = e.clientX;
+  });
+  window.addEventListener('mouseup', () => {
+    if(!isDragging) return;
+    isDragging = false;
+    if(mouseMoved > 6) stage.dataset.justDragged = '1';   // a drag, not a click
+    glide();
+  });
+
+  // ---- touch (mobile) ----
+  // A gesture is NOT a carousel drag until it proves it is horizontal. Until then the
+  // page scrolls normally. This stops the carousel from hijacking a vertical swipe.
+  let startX = 0, startY = 0, axis = null;   // axis: null = undecided, 'x' = spin, 'y' = let page scroll
+  const AXIS_SLOP = 8;                        // px of movement before we decide
+
+  stage.addEventListener('touchstart', e => {
+    delete stage.dataset.justDragged;                   // every gesture starts clean
+    if(e.touches.length !== 1){ axis = 'y'; return; }   // pinch/zoom is never a drag
+    startX = lastX = e.touches[0].clientX;
+    startY = e.touches[0].clientY;
+    axis = null; isDragging = false;
+    cancelAnimationFrame(raf);
+  }, {passive:true});
+
+  stage.addEventListener('touchmove', e => {
+    if(axis === 'y' || e.touches.length !== 1) return;
+    const x = e.touches[0].clientX, y = e.touches[0].clientY;
+
+    if(axis === null){
+      const dx = Math.abs(x - startX), dy = Math.abs(y - startY);
+      if(dx < AXIS_SLOP && dy < AXIS_SLOP) return;      // too small to judge yet
+      if(dy > dx){ axis = 'y'; return; }                // vertical intent -> hands off, page scrolls
+      axis = 'x'; isDragging = true;                    // horizontal intent -> we take it
+    }
+
+    // Committed to spinning: stop the page from scrolling under the finger
+    if(e.cancelable) e.preventDefault();
+    vel = (x - lastX) * .3;
+    setRot(rot + vel);
+    lastX = x;
+  }, {passive:false});
+
+  function endTouch(){
+    const wasDrag = axis === 'x';
+    axis = null;
+    if(wasDrag) stage.dataset.justDragged = '1';
+    if(!isDragging) return;
+    isDragging = false; glide();
+  }
+  stage.addEventListener('touchend', endTouch, {passive:true});
+  stage.addEventListener('touchcancel', endTouch, {passive:true});
+
+  // A spin should not also open the lightbox. Swallow the click that follows a drag.
+  stage.addEventListener('click', e => {
+    if(stage.dataset.justDragged){
+      delete stage.dataset.justDragged;
+      e.stopPropagation(); e.preventDefault();
+    }
+  }, true);
   let lastTs = 0;
   function autoSpin(ts) {
     if(!isDragging){ const dt=lastTs?(Math.min(ts-lastTs,50)):16; rot+=0.025*dt/16; cyl.style.transform=`rotateY(${rot}deg)`; }
@@ -836,18 +908,43 @@ function showToast(msg){ const t=document.getElementById('toast'); t.textContent
     cap.style.visibility = img.alt ? 'visible' : 'hidden';
   }
 
+  // iOS ignores body{overflow:hidden}, so pin the body and restore the exact
+  // scroll position on close. Without this the page jumps to the top.
+  let savedY = 0;
+  function lockScroll(){
+    savedY = window.scrollY || window.pageYOffset || 0;
+    document.body.style.position = 'fixed';
+    document.body.style.top = -savedY + 'px';
+    document.body.style.left = '0';
+    document.body.style.right = '0';
+    document.body.style.width = '100%';
+    document.body.style.overflow = 'hidden';
+  }
+  function unlockScroll(){
+    document.body.style.position = '';
+    document.body.style.top = '';
+    document.body.style.left = '';
+    document.body.style.right = '';
+    document.body.style.width = '';
+    document.body.style.overflow = '';
+    const behavior = document.documentElement.style.scrollBehavior;
+    document.documentElement.style.scrollBehavior = 'auto';   // no smooth-scroll animation back
+    window.scrollTo(0, savedY);
+    document.documentElement.style.scrollBehavior = behavior;
+  }
+
   window.openLightbox = function(list, i){
     items = list; lastFocus = document.activeElement;
     show(i);
+    lockScroll();
     box.classList.add('active');
-    document.body.style.overflow = 'hidden';
-    box.querySelector('.lightbox-close').focus();
+    box.querySelector('.lightbox-close').focus({preventScroll:true});
   };
   window.closeLightbox = function(){
     box.classList.remove('active');
-    document.body.style.overflow = '';
+    unlockScroll();
     boxImg.removeAttribute('src');
-    if(lastFocus) lastFocus.focus();
+    if(lastFocus) lastFocus.focus({preventScroll:true});
   };
 
   document.addEventListener('keydown', function(e){
@@ -859,6 +956,24 @@ function showToast(msg){ const t=document.getElementById('toast'); t.textContent
   });
   box.querySelector('.lightbox-prev').addEventListener('click', function(e){ e.stopPropagation(); show(idx - 1); });
   box.querySelector('.lightbox-next').addEventListener('click', function(e){ e.stopPropagation(); show(idx + 1); });
+
+  // Swipe: sideways changes photo, a clear downward swipe closes. Nothing else moves.
+  let sx = 0, sy = 0, swiping = false;
+  box.addEventListener('touchstart', function(e){
+    if(e.touches.length !== 1){ swiping = false; return; }
+    sx = e.touches[0].clientX; sy = e.touches[0].clientY; swiping = true;
+  }, {passive:true});
+  box.addEventListener('touchend', function(e){
+    if(!swiping) return;
+    swiping = false;
+    const t = e.changedTouches[0];
+    const dx = t.clientX - sx, dy = t.clientY - sy;
+    if(Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy)){
+      show(dx < 0 ? idx + 1 : idx - 1);   // RTL: drag left = next
+    } else if(dy > 70 && Math.abs(dy) > Math.abs(dx)){
+      closeLightbox();
+    }
+  }, {passive:true});
 
   // Gallery: every tile opens, and is reachable by keyboard
   const gallery = Array.prototype.slice.call(document.querySelectorAll('.gallery-item img'));
