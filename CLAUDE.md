@@ -34,6 +34,7 @@ Open items:
 - Open questions for Yosef/David: email addresses (to add a `mailto:` button beside WhatsApp on form success).
 
 ## Gotchas
+- The about-section photo strip (`#storyStrip`) uses **native `overflow-x` + scroll-snap**, deliberately. Do not "upgrade" it to a JS drag handler — that is what broke the carousel. Keep `overscroll-behavior-x:contain` (stops a swipe triggering iOS back-navigation). It holds ~6 photos picked for range (pergola, deck, seating, fence, balcony, set); the brothers want variety there, not more of the same category.
 - The 3D carousel's touch handling uses **axis detection** (undecided until 8px, then locks to one axis) so a vertical swipe scrolls the page instead of spinning the carousel. This was a real reported bug; do not simplify it back to a plain `touchmove` handler, and keep `touch-action:pan-y` on `.carousel-stage`.
 - `overflow-x:hidden` must stay on **`html` as well as `body`** — iOS ignores it on `body` alone.
 - The lightbox pins the body and restores `scrollY` on close; without that iOS drops the visitor at the top of the page.
