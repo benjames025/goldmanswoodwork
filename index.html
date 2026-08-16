@@ -58,6 +58,9 @@ html{scroll-behavior:smooth;overflow-x:hidden;}
 body{font-family:'Heebo',sans-serif;background:var(--cream);color:var(--text);direction:rtl;overflow-x:hidden;width:100%;position:relative;}
 /* nothing may push the page sideways */
 img,video,canvas,svg{max-width:100%;}
+/* the nav is fixed and 68px tall, so an un-offset #anchor jump parks the
+   section heading underneath it */
+section[id]{scroll-margin-top:84px;}
 
 nav{position:fixed;top:0;left:0;right:0;z-index:200;padding:0 48px;height:68px;display:flex;align-items:center;justify-content:space-between;background:rgba(250,247,242,0.94);backdrop-filter:blur(20px);border-bottom:1px solid rgba(92,58,30,0.1);transition:box-shadow .3s;}
 nav.scrolled{box-shadow:0 2px 32px rgba(28,16,8,0.1);}
@@ -115,6 +118,11 @@ nav.scrolled{box-shadow:0 2px 32px rgba(28,16,8,0.1);}
 .reveal.visible{opacity:1;transform:translateY(0);}
 
 .story{padding:110px 72px;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;max-width:1320px;margin:0 auto;}
+/* Grid items default to min-width:auto. Keep this floor at 0 so nothing
+   inside a column can ever push the column wider than the viewport — in RTL
+   that overflow runs off the left edge into the html overflow-x:hidden clip
+   and the text becomes unreadable. */
+.story > *{min-width:0;}
 .story h2{font-size:clamp(2rem,3.5vw,3.2rem);font-weight:800;color:var(--dark);letter-spacing:-.025em;line-height:1.1;margin-bottom:28px;}
 .story p{font-size:1rem;line-height:1.9;color:var(--text-mid);font-weight:300;margin-bottom:18px;}
 .story p strong{font-weight:600;color:var(--wood);}
@@ -128,25 +136,14 @@ nav.scrolled{box-shadow:0 2px 32px rgba(28,16,8,0.1);}
 .brother-tooltip span{color:var(--gold-light);}
 .brother-avatar:hover .brother-tooltip{opacity:1;transform:translateX(-50%) translateY(0);}
 .brothers-label{margin-right:16px;font-size:.85rem;color:var(--muted);}
-.story-media{position:relative;}
-/* Native horizontal scroll: the browser handles the gesture, so vertical
-   page scrolling is never hijacked. overscroll-behavior-x stops the swipe
-   from chaining into iOS back-navigation. */
-.story-imgs{display:flex;gap:12px;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;padding:0 0 14px;scrollbar-width:thin;scrollbar-color:rgba(92,58,30,.3) transparent;}
-.story-imgs::-webkit-scrollbar{height:6px;}
-.story-imgs::-webkit-scrollbar-track{background:rgba(92,58,30,.07);border-radius:10px;}
-.story-imgs::-webkit-scrollbar-thumb{background:rgba(92,58,30,.28);border-radius:10px;}
-.story-imgs::-webkit-scrollbar-thumb:hover{background:rgba(92,58,30,.45);}
-.story-img{flex:0 0 auto;width:250px;height:330px;border-radius:14px;overflow:hidden;scroll-snap-align:start;cursor:zoom-in;background:rgba(92,58,30,.06);}
+/* Photos sit in rows, all visible at once. This replaced a sideways scroller
+   that the brothers could not scroll on their phones — nothing here now
+   depends on a swipe gesture being discovered. */
+.story-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.story-img{border-radius:14px;overflow:hidden;aspect-ratio:3/4;cursor:zoom-in;background:rgba(92,58,30,.06);}
 .story-img img{width:100%;height:100%;object-fit:cover;transition:transform .5s;display:block;}
 .story-img:hover img{transform:scale(1.04);}
 .story-img:focus-visible{outline:2px solid var(--gold);outline-offset:3px;}
-/* fade on the left edge (RTL: that is the "more this way" side) */
-.story-media::after{content:'';position:absolute;top:0;bottom:14px;left:0;width:56px;pointer-events:none;background:linear-gradient(to left,transparent,var(--cream));opacity:1;transition:opacity .3s;}
-.story-media.at-end::after{opacity:0;}
-.story-hint{display:flex;align-items:center;gap:8px;margin-top:12px;font-size:.76rem;color:var(--muted);letter-spacing:.06em;}
-.story-hint .arrow{display:inline-block;animation:nudge 1.6s ease-in-out infinite;}
-@keyframes nudge{0%,100%{transform:translateX(0)}50%{transform:translateX(-5px)}}
 
 .services{background:var(--dark);padding:110px 72px;position:relative;overflow:hidden;}
 .services::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent,transparent 40px,rgba(255,255,255,.012) 40px,rgba(255,255,255,.012) 41px);}
@@ -206,23 +203,12 @@ nav.scrolled{box-shadow:0 2px 32px rgba(28,16,8,0.1);}
 .price-card:hover img{transform:scale(1.06);}
 .price-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(20,12,4,.88) 0%,rgba(20,12,4,.45) 50%,rgba(20,12,4,.15) 100%);transition:background .3s ease;}
 .price-card:hover .price-overlay{background:linear-gradient(to top,rgba(20,12,4,.92) 0%,rgba(20,12,4,.55) 60%,rgba(20,12,4,.2) 100%);}
-.price-amount{display:none;}
-.price-hover-content{display:none;}
 .price-always-visible{position:absolute;bottom:0;left:0;right:0;padding:22px 24px;display:flex;flex-direction:column;gap:6px;}
 .price-name{font-size:1.15rem;font-weight:700;color:white;margin-bottom:2px;text-shadow:0 1px 4px rgba(0,0,0,.5);}
 .price-desc-visible{font-size:.82rem;color:rgba(255,255,255,.85);line-height:1.5;text-shadow:0 1px 3px rgba(0,0,0,.4);}
 .price-includes-visible{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px;}
 .price-tag{font-size:.7rem;font-weight:600;color:rgba(255,255,255,.9);background:rgba(255,255,255,.12);padding:3px 10px;border-radius:20px;backdrop-filter:blur(4px);border:1px solid rgba(255,255,255,.08);}
 
-.miluim{background:linear-gradient(140deg,var(--olive) 0%,#2E3D12 100%);padding:100px 72px;position:relative;overflow:hidden;}
-.miluim::before{content:'';position:absolute;top:-80px;right:-80px;width:400px;height:400px;background:radial-gradient(circle,rgba(255,255,255,.05),transparent 70%);}
-.miluim-inner{max-width:860px;margin:0 auto;text-align:center;position:relative;z-index:1;}
-.miluim-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);border-radius:50px;padding:8px 20px;font-size:.72rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.85);margin-bottom:28px;}
-.miluim h2{font-size:clamp(1.8rem,3.2vw,3rem);font-weight:800;color:white;line-height:1.2;margin-bottom:20px;letter-spacing:-.02em;}
-.miluim p{font-size:1.02rem;line-height:1.85;color:rgba(255,255,255,.65);font-weight:300;max-width:680px;margin:0 auto;}
-.miluim-stats{display:flex;justify-content:center;gap:72px;margin-top:52px;}
-.m-stat-num{font-size:3.2rem;font-weight:900;color:white;line-height:1;}
-.m-stat-label{font-size:.78rem;color:rgba(255,255,255,.5);margin-top:6px;}
 
 .why-section{padding:110px 72px;max-width:1200px;margin:0 auto;}
 .why-header{margin-bottom:52px;}
@@ -246,13 +232,6 @@ nav.scrolled{box-shadow:0 2px 32px rgba(28,16,8,0.1);}
 .form-textarea{resize:vertical;min-height:100px;}
 .form-submit{background:var(--wood);color:white;border:none;padding:16px 40px;border-radius:50px;font-size:1rem;font-weight:700;font-family:'Heebo',sans-serif;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:10px;box-shadow:0 6px 24px rgba(92,58,30,.28);}
 .form-submit:hover{background:var(--dark);transform:translateY(-2px);}
-.upload-area{background:white;border:2px dashed rgba(92,58,30,.25);border-radius:12px;padding:28px;text-align:center;cursor:pointer;transition:border-color .2s;position:relative;}
-.upload-area:hover{border-color:var(--wood);}
-.upload-area input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;}
-.upload-icon{font-size:1.8rem;margin-bottom:8px;}
-.upload-text{font-size:.85rem;color:var(--muted);}
-.upload-previews{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;}
-.upload-preview{width:64px;height:64px;border-radius:8px;object-fit:cover;}
 .form-success{display:none;text-align:center;padding:48px 32px;}
 .form-success.show{display:block;}
 .success-icon{font-size:3rem;margin-bottom:16px;}
@@ -282,24 +261,25 @@ footer{background:#0F0804;padding:28px 72px;display:flex;align-items:center;just
 .toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--dark);color:var(--sand);padding:14px 28px;border-radius:50px;font-size:.88rem;font-weight:500;opacity:0;transition:all .3s;z-index:400;pointer-events:none;border:1px solid rgba(201,151,58,.3);}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 
-@media(max-width:900px){
+/* The nav collapses earlier than the rest of the layout: seven links plus the
+   brand and the CTA stop fitting on one line well before 900px. */
+@media(max-width:1024px){
   nav{padding:0 20px;}
   .nav-links{display:none;}
-  .nav-links.open{display:flex;flex-direction:column;position:fixed;top:68px;left:0;right:0;background:rgba(250,247,242,.97);padding:20px;gap:16px;border-bottom:1px solid rgba(92,58,30,.1);}
+  .nav-links.open{display:flex;flex-direction:column;position:fixed;top:68px;left:0;right:0;background:rgba(250,247,242,.97);padding:20px;gap:16px;border-bottom:1px solid rgba(92,58,30,.1);max-height:calc(100vh - 68px);overflow-y:auto;}
   .nav-hamburger{display:flex;}
+  .svc-grid{grid-template-columns:1fr 1fr;}
+}
+@media(max-width:900px){
   .hero-expand{height:100svh;}
   .hero-text-wrap{padding:28px 24px;}
   .hero h1{font-size:2.4rem;}
   .story{grid-template-columns:1fr;padding:64px 24px;gap:40px;}
-  .story-img{width:200px;height:270px;}
   .services{padding:64px 24px;}
-  .svc-grid{grid-template-columns:1fr;}
   .gallery-section{padding:64px 20px 40px;}
   .carousel-section .carousel-inner{padding:0 24px;}
   .pricing-section{padding:64px 24px;}
   .pricing-grid{grid-template-columns:1fr 1fr;}
-  .miluim{padding:64px 24px;}
-  .miluim-stats{gap:32px;}
   .why-section{padding:64px 24px;}
   .why-grid{grid-template-columns:1fr;gap:28px;}
   .request-section{padding:64px 24px;}
@@ -310,7 +290,8 @@ footer{background:#0F0804;padding:28px 72px;display:flex;align-items:center;just
   .wa-float{bottom:20px;left:20px;}
   .request-float{bottom:84px;left:20px;}
 }
-@media(max-width:500px){.pricing-grid{grid-template-columns:1fr;}.miluim-stats{flex-direction:column;gap:24px;}}
+@media(max-width:640px){.svc-grid{grid-template-columns:1fr;}}
+@media(max-width:500px){.pricing-grid{grid-template-columns:1fr;}}
 
 .lightbox-overlay{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.92);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s ease;backdrop-filter:blur(8px);overscroll-behavior:contain;touch-action:none;}
 .lightbox-overlay.active{opacity:1;pointer-events:all;}
@@ -397,12 +378,11 @@ footer{background:#0F0804;padding:28px 72px;display:flex;align-items:center;just
 <nav id="nav">
   <a class="nav-brand" href="#"><div class="nav-logo-mark">א״ג</div><span class="nav-brand-text">האחים גולדמן</span></a>
   <ul class="nav-links" id="nav-links">
+    <li><a href="#recent">עבודות אחרונות</a></li>
     <li><a href="#about">הסיפור שלנו</a></li>
     <li><a href="#services">שירותים</a></li>
-    <li><a href="#recent">פרויקטים</a></li>
+    <li><a href="#build">איך אנחנו בונים</a></li>
     <li><a href="#gallery">גלריה</a></li>
-    <li><a href="#build">איך בונים</a></li>
-    <li><a href="#pricing">עבודות</a></li>
     <li><a href="#request">בקשת עבודה</a></li>
     <li><a href="#contact" class="nav-cta">צרו קשר</a></li>
   </ul>
@@ -428,14 +408,14 @@ footer{background:#0F0804;padding:28px 72px;display:flex;align-items:center;just
       </div>
     </div>
   </div>
-  <div class="hero-scroll-hint"><span>גלול</span><div class="scroll-line"></div></div>
+  <div class="hero-scroll-hint"><span>גללו</span><div class="scroll-line"></div></div>
 </section>
 
 <section class="recent-section" id="recent">
   <div class="recent-header reveal">
     <div class="section-tag">מהשטח</div>
     <h2>פרויקטים אחרונים</h2>
-    <p>עבודות שסיימנו לאחרונה. הסרטונים רצים בשקט, ואפשר ללחוץ על תמונה כדי להגדיל.</p>
+    <p>עבודות שסיימנו לאחרונה. הסרטונים מתנגנים ללא קול, ואפשר ללחוץ על תמונה כדי להגדיל.</p>
   </div>
   <div class="recent-grid reveal">
 
@@ -493,9 +473,9 @@ footer{background:#0F0804;padding:28px 72px;display:flex;align-items:center;just
     <div class="reveal">
       <div class="section-tag">הסיפור שלנו</div>
       <h2>שני אחים. מסלול חדש.</h2>
-      <p>אנחנו <strong>יוסף ודוד גולדמן</strong>, שני אחים מקיבוץ בית זרע. שנינו גולנציקים, ובשנתיים וחצי האחרונות כל אחד מאיתנו עשה מעל <strong>400 ימי מילואים</strong> בכל הגזרות.</p>
+      <p>אנחנו <strong>יוסף ודוד גולדמן</strong>, שני אחים מקיבוץ בית זרע. שנינו גולנצ'יקים, ובשנתיים וחצי האחרונות כל אחד מאיתנו עשה מעל <strong>400 ימי מילואים</strong> בכל הגזרות.</p>
       <p>אחרי התקופה הזאת החלטנו לחזור לשגרה ולהתחיל לבנות משהו משלנו – עסק משפחתי שבנוי על <strong>אחריות, יסודיות ומקצועיות אמיתית</strong>.</p>
-      <p>כל פרויקט מקבל את המחשבה, הזמן והדיוק שהוא ראוי לו. מגיעים לשטח, מקשיבים, ובונים.</p>
+      <p>כל פרויקט מקבל את המחשבה, הזמן והדיוק שמגיעים לו. מגיעים לשטח, מקשיבים, ובונים.</p>
       <div class="brothers-row">
         <span class="brothers-label">הכירו אותנו:</span>
         <div class="brother-avatar"><img src="/img/yosef-goldman-sm.webp" alt="יוסף גולדמן" width="700" height="674" loading="lazy" decoding="async"><div class="brother-tooltip"><strong>יוסף גולדמן</strong><span>שותף מייסד</span></div></div>
@@ -503,15 +483,14 @@ footer{background:#0F0804;padding:28px 72px;display:flex;align-items:center;just
       </div>
     </div>
     <div class="story-media reveal" style="transition-delay:.1s">
-      <div class="story-imgs" id="storyStrip" tabindex="0" role="group" aria-label="גלריית עבודות - ניתן לגלול הצידה">
-      <div class="story-img"><img src="/img/pergola-pool-kinneret-sm.webp" alt="פרגולה עם חיפוי במבוק מול הכינרת" width="506" height="900" loading="lazy" decoding="async" srcset="/img/pergola-pool-kinneret-sm.webp 506w, /img/pergola-pool-kinneret-lg.webp 843w" sizes="250px" data-full="/img/pergola-pool-kinneret-lg.webp"></div>
-      <div class="story-img"><img src="/img/deck-red-tree-sm.webp" alt="דק עץ סביב עץ אורן" width="700" height="525" loading="lazy" decoding="async" srcset="/img/deck-red-tree-sm.webp 700w, /img/deck-red-tree-lg.webp 1400w" sizes="250px" data-full="/img/deck-red-tree-lg.webp"></div>
-      <div class="story-img"><img src="/img/garden-seating-tree-sm.webp" alt="מערכת ישיבה בגינה" width="700" height="933" loading="lazy" decoding="async" srcset="/img/garden-seating-tree-sm.webp 700w, /img/garden-seating-tree-lg.webp 900w" sizes="250px" data-full="/img/garden-seating-tree-lg.webp"></div>
-      <div class="story-img"><img src="/img/fence-build-wide-sm.webp" alt="גדר עץ גבוהה לחצר" width="700" height="394" loading="lazy" decoding="async" srcset="/img/fence-build-wide-sm.webp 700w, /img/fence-build-wide-lg.webp 1400w" sizes="250px" data-full="/img/fence-build-wide-lg.webp"></div>
-      <div class="story-img"><img src="/img/bench-balcony-sunset-sm.webp" alt="ספסל מרפסת בשקיעה" width="675" height="900" loading="lazy" decoding="async" srcset="/img/bench-balcony-sunset-sm.webp 675w, /img/bench-balcony-sunset-lg.webp 1125w" sizes="250px" data-full="/img/bench-balcony-sunset-lg.webp"></div>
-      <div class="story-img"><img src="/img/garden-set-full-sm.webp" alt="סט ישיבה לגינה" width="700" height="525" loading="lazy" decoding="async" srcset="/img/garden-set-full-sm.webp 700w, /img/garden-set-full-lg.webp 1200w" sizes="250px" data-full="/img/garden-set-full-lg.webp"></div>
+      <div class="story-grid">
+      <div class="story-img"><img src="/img/pergola-pool-kinneret-sm.webp" alt="פרגולה עם חיפוי במבוק מול הכינרת" width="506" height="900" loading="lazy" decoding="async" srcset="/img/pergola-pool-kinneret-sm.webp 506w, /img/pergola-pool-kinneret-lg.webp 843w" sizes="(max-width:900px) 45vw, 22vw" data-full="/img/pergola-pool-kinneret-lg.webp"></div>
+      <div class="story-img"><img src="/img/deck-red-tree-sm.webp" alt="דק עץ סביב עץ אורן" width="700" height="525" loading="lazy" decoding="async" srcset="/img/deck-red-tree-sm.webp 700w, /img/deck-red-tree-lg.webp 1400w" sizes="(max-width:900px) 45vw, 22vw" data-full="/img/deck-red-tree-lg.webp"></div>
+      <div class="story-img"><img src="/img/garden-seating-tree-sm.webp" alt="מערכת ישיבה בגינה" width="700" height="933" loading="lazy" decoding="async" srcset="/img/garden-seating-tree-sm.webp 700w, /img/garden-seating-tree-lg.webp 900w" sizes="(max-width:900px) 45vw, 22vw" data-full="/img/garden-seating-tree-lg.webp"></div>
+      <div class="story-img"><img src="/img/fence-build-wide-sm.webp" alt="גדר עץ גבוהה לחצר" width="700" height="394" loading="lazy" decoding="async" srcset="/img/fence-build-wide-sm.webp 700w, /img/fence-build-wide-lg.webp 1400w" sizes="(max-width:900px) 45vw, 22vw" data-full="/img/fence-build-wide-lg.webp"></div>
+      <div class="story-img"><img src="/img/bench-balcony-sunset-sm.webp" alt="ספסל מרפסת בשקיעה" width="675" height="900" loading="lazy" decoding="async" srcset="/img/bench-balcony-sunset-sm.webp 675w, /img/bench-balcony-sunset-lg.webp 1125w" sizes="(max-width:900px) 45vw, 22vw" data-full="/img/bench-balcony-sunset-lg.webp"></div>
+      <div class="story-img"><img src="/img/garden-set-full-sm.webp" alt="סט ישיבה לגינה" width="700" height="525" loading="lazy" decoding="async" srcset="/img/garden-set-full-sm.webp 700w, /img/garden-set-full-lg.webp 1200w" sizes="(max-width:900px) 45vw, 22vw" data-full="/img/garden-set-full-lg.webp"></div>
       </div>
-      <div class="story-hint"><span class="arrow">←</span><span>גללו הצידה לעוד עבודות</span></div>
     </div>
   </div>
 </section>
@@ -520,36 +499,13 @@ footer{background:#0F0804;padding:28px 72px;display:flex;align-items:center;just
   <div class="services-inner">
     <div class="reveal"><div class="section-tag">מה אנחנו בונים</div><h2>שירותים</h2></div>
     <div class="svc-grid">
-      <div class="svc-card reveal"><div class="svc-img"><img src="/img/deck-octagonal-sm.webp" alt="דק גינה" width="700" height="394" loading="lazy" decoding="async" srcset="/img/deck-octagonal-sm.webp 700w, /img/deck-octagonal-lg.webp 1200w" sizes="(max-width:780px) 100vw, 33vw"></div><div class="svc-body"><h3>🏡 דקים לגינות וחצרות</h3><p>דקים רחבים ועמידים שהופכים כל גינה לחלל מגורים חיצוני מושלם.</p><div class="svc-features"><div class="svc-feat"><span class="feat-dot"></span>צורות וגדלים מותאמים אישית</div><div class="svc-feat"><span class="feat-dot"></span>עמידות לתנאי מזג אוויר</div></div></div></div>
+      <div class="svc-card reveal"><div class="svc-img"><img src="/img/deck-octagonal-sm.webp" alt="דק גינה" width="700" height="394" loading="lazy" decoding="async" srcset="/img/deck-octagonal-sm.webp 700w, /img/deck-octagonal-lg.webp 1200w" sizes="(max-width:780px) 100vw, 33vw"></div><div class="svc-body"><h3>🏡 דקים לגינות וחצרות</h3><p>דקים רחבים ועמידים שהופכים כל גינה למרחב ישיבה נוסף של הבית.</p><div class="svc-features"><div class="svc-feat"><span class="feat-dot"></span>צורות וגדלים מותאמים אישית</div><div class="svc-feat"><span class="feat-dot"></span>עמידות לתנאי מזג אוויר</div></div></div></div>
       <div class="svc-card reveal" style="transition-delay:.08s"><div class="svc-img"><img src="/img/bench-l-patio-sm.webp" alt="ריהוט מרפסת" width="700" height="394" loading="lazy" decoding="async" srcset="/img/bench-l-patio-sm.webp 700w, /img/bench-l-patio-lg.webp 1200w" sizes="(max-width:780px) 100vw, 33vw"></div><div class="svc-body"><h3>🌿 ריהוט מרפסת</h3><p>ספסלים, שולחנות ומערכות ישיבה שנבנות בדיוק לפי המידות והסגנון שלכם.</p><div class="svc-features"><div class="svc-feat"><span class="feat-dot"></span>התאמה מדויקת לשטח</div><div class="svc-feat"><span class="feat-dot"></span>פינות L ופתרונות יצירתיים</div></div></div></div>
       <div class="svc-card reveal" style="transition-delay:.16s"><div class="svc-img"><img src="/img/chair-black-wood-sm.webp" alt="ריהוט מותאם" width="675" height="1200" loading="lazy" decoding="async"></div><div class="svc-body"><h3>🪑 ריהוט גינה מותאם אישית</h3><p>סטים מלאים, כיסאות, שולחנות קפה ועוד – בצבעים ובגימורים שתבחרו.</p><div class="svc-features"><div class="svc-feat"><span class="feat-dot"></span>גימורים שחור, טבעי, כהה</div><div class="svc-feat"><span class="feat-dot"></span>עיצוב לפי בקשה</div></div></div></div>
     </div>
   </div>
 </section>
 
-
-<section class="gallery-section" id="gallery">
-  <div class="gallery-header reveal"><div class="section-tag">העבודות שלנו</div><h2>גלריה</h2></div>
-  <div class="gallery-grid reveal">
-    <div class="gallery-item wide featured"><img src="/img/planters-sm.webp" alt="אדניות עץ" width="700" height="394" loading="lazy" decoding="async" srcset="/img/planters-sm.webp 700w, /img/planters-lg.webp 1400w" sizes="(max-width:780px) 50vw, 25vw" data-full="/img/planters-lg.webp"><div class="gallery-overlay"><span>אדניות עץ</span></div></div>
-    <div class="gallery-item tall featured"><img src="/img/deck-build-sm.webp" alt="בניית דק" width="700" height="394" loading="lazy" decoding="async" srcset="/img/deck-build-sm.webp 700w, /img/deck-build-lg.webp 1400w" sizes="(max-width:780px) 50vw, 25vw" data-full="/img/deck-build-lg.webp"><div class="gallery-overlay"><span>בניית דק</span></div></div>
-    <div class="gallery-item"><img src="/img/workshop-sm.webp" alt="הסדנה" width="700" height="394" loading="lazy" decoding="async" srcset="/img/workshop-sm.webp 700w, /img/workshop-lg.webp 1200w" sizes="(max-width:780px) 50vw, 25vw" data-full="/img/workshop-lg.webp"></div>
-    <div class="gallery-item"><img src="/img/pergola-patio-finished-sm.webp" alt="פרגולה עם חיפוי במבוק מול הכינרת" width="506" height="900" loading="lazy" decoding="async" srcset="/img/pergola-patio-finished-sm.webp 506w, /img/pergola-patio-finished-lg.webp 844w" sizes="(max-width:780px) 50vw, 25vw" data-full="/img/pergola-patio-finished-lg.webp"></div>
-    <div class="gallery-item"><img src="/img/entry-step-deck-sm.webp" alt="מדרגת עץ בכניסה לבית" width="506" height="900" loading="lazy" decoding="async" srcset="/img/entry-step-deck-sm.webp 506w, /img/entry-step-deck-lg.webp 844w" sizes="(max-width:780px) 50vw, 25vw" data-full="/img/entry-step-deck-lg.webp"></div>
-    <div class="gallery-item"><img src="/img/benches-long-sm.webp" alt="שולחן אוכל קיבוץ" width="700" height="394" loading="lazy" decoding="async" srcset="/img/benches-long-sm.webp 700w, /img/benches-long-lg.webp 1200w" sizes="(max-width:780px) 50vw, 25vw" data-full="/img/benches-long-lg.webp"></div>
-    <div class="gallery-item"><img src="/img/benches-outdoor-sm.webp" alt="ספסלי גינה" width="675" height="1200" loading="lazy" decoding="async" data-full="/img/benches-outdoor-lg.webp"></div>
-    <div class="gallery-item"><img src="/img/deck-octagonal-sm.webp" alt="דק מתומן" width="700" height="394" loading="lazy" decoding="async" srcset="/img/deck-octagonal-sm.webp 700w, /img/deck-octagonal-lg.webp 1200w" sizes="(max-width:780px) 50vw, 25vw" data-full="/img/deck-octagonal-lg.webp"></div>
-    <div class="gallery-item"><img src="/img/deck-red-tree-sm.webp" alt="דק קולורדו" width="700" height="525" loading="lazy" decoding="async" srcset="/img/deck-red-tree-sm.webp 700w, /img/deck-red-tree-lg.webp 1400w" sizes="(max-width:780px) 50vw, 25vw" data-full="/img/deck-red-tree-lg.webp"></div>
-    <div class="gallery-item"><img src="/img/sofa-cushions-sm.webp" alt="ספה עם כריות" width="700" height="1050" loading="lazy" decoding="async" srcset="/img/sofa-cushions-sm.webp 700w, /img/sofa-cushions-lg.webp 800w" sizes="(max-width:780px) 50vw, 25vw" data-full="/img/sofa-cushions-lg.webp"></div>
-    <div class="gallery-item"><img src="/img/bench-l-patio-sm.webp" alt="ספסל L מרפסת" width="700" height="394" loading="lazy" decoding="async" srcset="/img/bench-l-patio-sm.webp 700w, /img/bench-l-patio-lg.webp 1200w" sizes="(max-width:780px) 50vw, 25vw" data-full="/img/bench-l-patio-lg.webp"></div>
-    <div class="gallery-item"><img src="/img/deck-night-sm.webp" alt="דק גינה לילה" width="700" height="394" loading="lazy" decoding="async" srcset="/img/deck-night-sm.webp 700w, /img/deck-night-lg.webp 1200w" sizes="(max-width:780px) 50vw, 25vw" data-full="/img/deck-night-lg.webp"></div>
-    <div class="gallery-item"><img src="/img/garden-set-full-sm.webp" alt="סט ישיבה" width="700" height="525" loading="lazy" decoding="async" srcset="/img/garden-set-full-sm.webp 700w, /img/garden-set-full-lg.webp 1200w" sizes="(max-width:780px) 50vw, 25vw" data-full="/img/garden-set-full-lg.webp"></div>
-    <div class="gallery-item"><img src="/img/deck-fence-tree-sm.webp" alt="דק רחב קולורדו" width="700" height="394" loading="lazy" decoding="async" srcset="/img/deck-fence-tree-sm.webp 700w, /img/deck-fence-tree-lg.webp 1200w" sizes="(max-width:780px) 50vw, 25vw" data-full="/img/deck-fence-tree-lg.webp"></div>
-    <div class="gallery-item"><img src="/img/lounge-chairs-sm.webp" alt="כיסאות נוח מעץ" width="700" height="394" loading="lazy" decoding="async" srcset="/img/lounge-chairs-sm.webp 700w, /img/lounge-chairs-lg.webp 1200w" sizes="(max-width:780px) 50vw, 25vw" data-full="/img/lounge-chairs-lg.webp"></div>
-    <div class="gallery-item"><img src="/img/garden-seating-tree-sm.webp" alt="ישיבה בגינה" width="700" height="933" loading="lazy" decoding="async" srcset="/img/garden-seating-tree-sm.webp 700w, /img/garden-seating-tree-lg.webp 900w" sizes="(max-width:780px) 50vw, 25vw" data-full="/img/garden-seating-tree-lg.webp"></div>
-    <div class="gallery-item"><img src="/img/table-workshop-sm.webp" alt="פני שטח עץ" width="675" height="1200" loading="lazy" decoding="async" data-full="/img/table-workshop-lg.webp"></div>
-  </div>
-</section>
 
 <section class="build-section" id="build">
   <div class="build-inner">
@@ -592,7 +548,7 @@ footer{background:#0F0804;padding:28px 72px;display:flex;align-items:center;just
                srcset="/img/ceiling-install-sm.webp 506w, /img/ceiling-install-lg.webp 844w"
                sizes="(max-width:1000px) 100vw, 33vw" data-full="/img/ceiling-install-lg.webp">
         </div>
-        <h3>מגמרים לפרטים</h3>
+        <h3>מגמרים עד הפרט האחרון</h3>
         <p>ליטוש, ציפוי והגנה על העץ. מסיימים רק כשזה נראה בדיוק כמו שצריך.</p>
       </div>
 
@@ -600,14 +556,39 @@ footer{background:#0F0804;padding:28px 72px;display:flex;align-items:center;just
   </div>
 </section>
 
+<section class="gallery-section" id="gallery">
+  <div class="gallery-header reveal"><div class="section-tag">העבודות שלנו</div><h2>גלריה</h2></div>
+  <div class="gallery-grid reveal">
+    <div class="gallery-item wide"><img src="/img/planters-sm.webp" alt="אדניות עץ" width="700" height="394" loading="lazy" decoding="async" srcset="/img/planters-sm.webp 700w, /img/planters-lg.webp 1400w" sizes="(max-width:780px) 50vw, 25vw" data-full="/img/planters-lg.webp"><div class="gallery-overlay"><span>אדניות עץ</span></div></div>
+    <div class="gallery-item tall"><img src="/img/deck-build-sm.webp" alt="בניית דק" width="700" height="394" loading="lazy" decoding="async" srcset="/img/deck-build-sm.webp 700w, /img/deck-build-lg.webp 1400w" sizes="(max-width:780px) 50vw, 25vw" data-full="/img/deck-build-lg.webp"><div class="gallery-overlay"><span>בניית דק</span></div></div>
+    <div class="gallery-item"><img src="/img/workshop-sm.webp" alt="הסדנה" width="700" height="394" loading="lazy" decoding="async" srcset="/img/workshop-sm.webp 700w, /img/workshop-lg.webp 1200w" sizes="(max-width:780px) 50vw, 25vw" data-full="/img/workshop-lg.webp"></div>
+    <div class="gallery-item"><img src="/img/pergola-patio-finished-sm.webp" alt="פרגולה עם חיפוי במבוק מול הכינרת" width="506" height="900" loading="lazy" decoding="async" srcset="/img/pergola-patio-finished-sm.webp 506w, /img/pergola-patio-finished-lg.webp 844w" sizes="(max-width:780px) 50vw, 25vw" data-full="/img/pergola-patio-finished-lg.webp"></div>
+    <div class="gallery-item"><img src="/img/entry-step-deck-sm.webp" alt="מדרגת עץ בכניסה לבית" width="506" height="900" loading="lazy" decoding="async" srcset="/img/entry-step-deck-sm.webp 506w, /img/entry-step-deck-lg.webp 844w" sizes="(max-width:780px) 50vw, 25vw" data-full="/img/entry-step-deck-lg.webp"></div>
+    <div class="gallery-item"><img src="/img/benches-long-sm.webp" alt="שולחן אוכל קיבוץ" width="700" height="394" loading="lazy" decoding="async" srcset="/img/benches-long-sm.webp 700w, /img/benches-long-lg.webp 1200w" sizes="(max-width:780px) 50vw, 25vw" data-full="/img/benches-long-lg.webp"></div>
+    <div class="gallery-item"><img src="/img/benches-outdoor-sm.webp" alt="ספסלי גינה" width="675" height="1200" loading="lazy" decoding="async" data-full="/img/benches-outdoor-lg.webp"></div>
+    <div class="gallery-item"><img src="/img/deck-octagonal-sm.webp" alt="דק מתומן" width="700" height="394" loading="lazy" decoding="async" srcset="/img/deck-octagonal-sm.webp 700w, /img/deck-octagonal-lg.webp 1200w" sizes="(max-width:780px) 50vw, 25vw" data-full="/img/deck-octagonal-lg.webp"></div>
+    <div class="gallery-item"><img src="/img/deck-red-tree-sm.webp" alt="דק קולורדו" width="700" height="525" loading="lazy" decoding="async" srcset="/img/deck-red-tree-sm.webp 700w, /img/deck-red-tree-lg.webp 1400w" sizes="(max-width:780px) 50vw, 25vw" data-full="/img/deck-red-tree-lg.webp"></div>
+    <div class="gallery-item"><img src="/img/sofa-cushions-sm.webp" alt="ספה עם כריות" width="700" height="1050" loading="lazy" decoding="async" srcset="/img/sofa-cushions-sm.webp 700w, /img/sofa-cushions-lg.webp 800w" sizes="(max-width:780px) 50vw, 25vw" data-full="/img/sofa-cushions-lg.webp"></div>
+    <div class="gallery-item"><img src="/img/bench-l-patio-sm.webp" alt="ספסל L מרפסת" width="700" height="394" loading="lazy" decoding="async" srcset="/img/bench-l-patio-sm.webp 700w, /img/bench-l-patio-lg.webp 1200w" sizes="(max-width:780px) 50vw, 25vw" data-full="/img/bench-l-patio-lg.webp"></div>
+    <div class="gallery-item"><img src="/img/deck-night-sm.webp" alt="דק גינה לילה" width="700" height="394" loading="lazy" decoding="async" srcset="/img/deck-night-sm.webp 700w, /img/deck-night-lg.webp 1200w" sizes="(max-width:780px) 50vw, 25vw" data-full="/img/deck-night-lg.webp"></div>
+    <div class="gallery-item"><img src="/img/garden-set-full-sm.webp" alt="סט ישיבה" width="700" height="525" loading="lazy" decoding="async" srcset="/img/garden-set-full-sm.webp 700w, /img/garden-set-full-lg.webp 1200w" sizes="(max-width:780px) 50vw, 25vw" data-full="/img/garden-set-full-lg.webp"></div>
+    <div class="gallery-item"><img src="/img/deck-fence-tree-sm.webp" alt="דק רחב קולורדו" width="700" height="394" loading="lazy" decoding="async" srcset="/img/deck-fence-tree-sm.webp 700w, /img/deck-fence-tree-lg.webp 1200w" sizes="(max-width:780px) 50vw, 25vw" data-full="/img/deck-fence-tree-lg.webp"></div>
+    <div class="gallery-item"><img src="/img/lounge-chairs-sm.webp" alt="כיסאות נוח מעץ" width="700" height="394" loading="lazy" decoding="async" srcset="/img/lounge-chairs-sm.webp 700w, /img/lounge-chairs-lg.webp 1200w" sizes="(max-width:780px) 50vw, 25vw" data-full="/img/lounge-chairs-lg.webp"></div>
+    <div class="gallery-item"><img src="/img/garden-seating-tree-sm.webp" alt="ישיבה בגינה" width="700" height="933" loading="lazy" decoding="async" srcset="/img/garden-seating-tree-sm.webp 700w, /img/garden-seating-tree-lg.webp 900w" sizes="(max-width:780px) 50vw, 25vw" data-full="/img/garden-seating-tree-lg.webp"></div>
+    <div class="gallery-item"><img src="/img/table-workshop-sm.webp" alt="פני שטח עץ" width="675" height="1200" loading="lazy" decoding="async" data-full="/img/table-workshop-lg.webp"></div>
+  </div>
+</section>
+
+
+
 <section class="carousel-section">
   <div class="carousel-inner reveal"><div class="section-tag">כל הפרויקטים</div><h2>עוד עבודות</h2></div>
   <div class="carousel-stage" id="carouselStage"><div class="carousel-cylinder" id="carouselCylinder"></div></div>
-  <p class="carousel-hint">גררו לסיבוב ←→</p>
+  <p class="carousel-hint">גררו לסיבוב</p>
 </section>
 
 <section class="pricing-section" id="pricing">
-  <div class="pricing-header reveal"><div class="section-tag">מה אנחנו עושים</div><h2>העבודות שלנו</h2><p style="font-size:.95rem;color:var(--muted);margin-top:10px;">כל פרויקט נבנה בהתאמה אישית – ייעוץ והצעת מחיר בחינם</p></div>
+  <div class="pricing-header reveal"><div class="section-tag">מה כלול</div><h2>סוגי פרויקטים</h2><p style="font-size:.95rem;color:var(--muted);margin-top:10px;">כל פרויקט נבנה בהתאמה אישית – ייעוץ והצעת מחיר בחינם</p></div>
   <div class="pricing-grid">
     <div class="price-card reveal"><img src="/img/deck-octagonal-sm.webp" alt="דק גינה" width="700" height="394" loading="lazy" decoding="async" srcset="/img/deck-octagonal-sm.webp 700w, /img/deck-octagonal-lg.webp 1200w" sizes="(max-width:780px) 50vw, 33vw"><div class="price-overlay"></div><div class="price-always-visible"><div class="price-name">דק גינה</div><div class="price-desc-visible">דק עץ לגינה פרטית – מידות סטנדרטיות, עץ מוגן, ציפוי UV</div><div class="price-includes-visible"><span class="price-tag">מדידה והתאמה</span><span class="price-tag">חומרים + עבודה</span></div></div></div>
     <div class="price-card reveal" style="transition-delay:.08s"><img src="/img/garden-set-full-sm.webp" alt="סט ישיבה" width="700" height="525" loading="lazy" decoding="async" srcset="/img/garden-set-full-sm.webp 700w, /img/garden-set-full-lg.webp 1200w" sizes="(max-width:780px) 50vw, 33vw"><div class="price-overlay"></div><div class="price-always-visible"><div class="price-name">סט ישיבה לגינה</div><div class="price-desc-visible">ספה + 2 כיסאות + שולחן קפה – עץ מלא, גימור טבעי</div><div class="price-includes-visible"><span class="price-tag">4 חלקים בסט</span><span class="price-tag">בחירת גימור וצבע</span></div></div></div>
@@ -638,7 +619,7 @@ footer{background:#0F0804;padding:28px 72px;display:flex;align-items:center;just
         <div class="form-group"><label class="form-label">מספר טלפון *</label><input class="form-input" id="fphone" name="phone" type="tel" placeholder="050-0000000" required></div>
         <div class="form-group"><label class="form-label">אימייל</label><input class="form-input" id="femail" name="email" type="email" placeholder="name@email.com"></div>
         <div class="form-group"><label class="form-label">מיקום</label><input class="form-input" id="flocation" name="location" type="text" placeholder="עיר / ישוב"></div>
-        <div class="form-group"><label class="form-label">סוג הפרויקט</label><select class="form-select" id="ftype" name="project_type"><option value="">בחרו סוג...</option><option value="deck-garden">דק לגינה</option><option value="deck-balcony">ריהוט מרפסת</option><option value="seating-set">סט ישיבה לגינה</option><option value="dining-table">שולחן ספסלים</option><option value="custom">פרויקט מותאם אישית</option><option value="other">אחר</option></select></div>
+        <div class="form-group"><label class="form-label">סוג הפרויקט</label><select class="form-select" id="ftype" name="project_type"><option value="">בחרו סוג...</option><option value="deck-garden">דק לגינה</option><option value="deck-balcony">ריהוט מרפסת</option><option value="seating-set">סט ישיבה לגינה</option><option value="dining-table">שולחן וספסלים</option><option value="custom">פרויקט מותאם אישית</option><option value="other">אחר</option></select></div>
         <div class="form-group"><label class="form-label">תקציב משוער</label><select class="form-select" id="fbudget" name="budget"><option value="">לא בטוח עדיין</option><option value="under-3k">עד 3,000 ש"ח</option><option value="3k-6k">3,000 – 6,000 ש"ח</option><option value="6k-12k">6,000 – 12,000 ש"ח</option><option value="12k+">מעל 12,000 ש"ח</option></select></div>
         <div class="form-group full"><label class="form-label">תיאור הפרויקט *</label><textarea class="form-textarea" id="fdesc" name="description" placeholder="תארו מה אתם רוצים לבנות..." required></textarea></div>
         <div class="form-group full"><p style="font-size:.82rem;color:var(--muted);line-height:1.6;">📸 יש לכם תמונות השראה? שלחו לנו בוואטסאפ אחרי שתשלחו את הבקשה — נשמח לראות.</p></div>
@@ -663,7 +644,7 @@ footer{background:#0F0804;padding:28px 72px;display:flex;align-items:center;just
   </div>
 </section>
 
-<footer><div class="footer-logo">האחים גולדמן | דקים ועבודות עץ</div><div class="footer-copy">© 2025 כל הזכויות שמורות</div></footer>
+<footer><div class="footer-logo">האחים גולדמן | דקים ועבודות עץ</div><div class="footer-copy">© 2026 כל הזכויות שמורות</div></footer>
 
 <a href="#request" class="request-float">📋 בקשת עבודה</a>
 <a href="https://wa.me/972556651800" class="wa-float" target="_blank" rel="noopener noreferrer">💬</a>
@@ -676,23 +657,38 @@ const hamburger = document.getElementById('hamburger');
 const navLinks = document.getElementById('nav-links');
 window.addEventListener('scroll', () => nav.classList.toggle('scrolled', scrollY > 50));
 hamburger.addEventListener('click', () => navLinks.classList.toggle('open'));
+// on a phone the open menu is a fixed overlay — without this it stays up and
+// covers the section the visitor just tapped through to
+navLinks.addEventListener('click', e => { if(e.target.closest('a')) navLinks.classList.remove('open'); });
 
 // HERO SCROLL EXPAND - card grows as you scroll
 (function(){
   const media = document.getElementById('heroMedia');
-  const W = window.innerWidth, H = window.innerHeight;
-  const startW = Math.min(W * 0.58, 680);
-  const startH = Math.min(H * 0.68, 560);
-  media.style.width = startW + 'px';
-  media.style.height = startH + 'px';
-  window.addEventListener('scroll', () => {
+  let W = 0, H = 0, startW = 0, startH = 0;
+
+  function measure(){
+    W = window.innerWidth;
+    H = window.innerHeight;
+    // A phone gets a near-full-bleed card. At the desktop 58% the card was
+    // ~225px wide on an iPhone and the headline wrapped one word per line.
+    const narrow = W < 900;
+    startW = Math.min(W * (narrow ? 0.92 : 0.58), 680);
+    startH = Math.min(H * (narrow ? 0.62 : 0.68), 560);
+    apply();
+  }
+
+  function apply(){
     const p = Math.min(scrollY / (H * 0.75), 1);
-    const w = startW + (W - startW) * p;
-    const h = startH + (H - startH) * p;
-    media.style.width = w + 'px';
-    media.style.height = h + 'px';
+    media.style.width = (startW + (W - startW) * p) + 'px';
+    media.style.height = (startH + (H - startH) * p) + 'px';
     media.style.borderRadius = (16 * (1-p)) + 'px';
-  }, {passive:true});
+  }
+
+  measure();
+  window.addEventListener('scroll', apply, {passive:true});
+  // Re-measure on rotation only. iOS fires resize every time the URL bar
+  // hides, and re-running this on that would make the card jump mid-scroll.
+  window.addEventListener('resize', () => { if(window.innerWidth !== W) measure(); });
 })();
 
 // HERO ANIMATE IN
@@ -879,22 +875,6 @@ reveals.forEach(el => obs.observe(el));
 })();
 
 function showToast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),3500); }
-
-// STORY STRIP — hide the edge fade once it is scrolled to the end
-(function(){
-  const strip = document.getElementById('storyStrip');
-  if(!strip) return;
-  const wrap = strip.closest('.story-media');
-  function update(){
-    // RTL reports scrollLeft as negative in some engines, so compare on magnitude
-    const scrolled = Math.abs(strip.scrollLeft);
-    const atEnd = scrolled + strip.clientWidth >= strip.scrollWidth - 4;
-    wrap.classList.toggle('at-end', atEnd);
-  }
-  strip.addEventListener('scroll', update, {passive:true});
-  window.addEventListener('resize', update);
-  update();
-})();
 
 // PROJECT VIDEOS — silent loop, only while on screen
 (function(){
